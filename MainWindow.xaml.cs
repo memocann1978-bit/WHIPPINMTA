@@ -34,7 +34,7 @@ public partial class MainWindow : Window
     private const uint MOD_NOREPEAT = 0x4000;
     private string _overlayHotkey = "F8";
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18);
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18, bool CenterDot = false, double CenterDotSize = 3, double Rotation = 0, bool ShowLeft = true, bool ShowRight = true, bool ShowTop = true, bool ShowBottom = true);
 
     public MainWindow()
     {
@@ -272,6 +272,8 @@ try {{
             RightLengthSlider.Value = Math.Clamp(s.RightLength, RightLengthSlider.Minimum, RightLengthSlider.Maximum);
             TopLengthSlider.Value = Math.Clamp(s.TopLength, TopLengthSlider.Minimum, TopLengthSlider.Maximum);
             BottomLengthSlider.Value = Math.Clamp(s.BottomLength, BottomLengthSlider.Minimum, BottomLengthSlider.Maximum);
+            CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
+            ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
             _color = s.Color;
             _outlineColor = s.OutlineColor;
             if (CustomColorBox is not null) CustomColorBox.Text = _color;
@@ -400,11 +402,11 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true);
         UpdateOverlay();
     }
 
-    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1)
+    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true)
     {
         var brush = (Brush)new BrushConverter().ConvertFromString(color)!;
         var outlineBrush = (Brush)new BrushConverter().ConvertFromString(outlineColor)!;
@@ -413,8 +415,16 @@ try {{
         rightLength = rightLength < 0 ? size : rightLength;
         topLength = topLength < 0 ? size : topLength;
         bottomLength = bottomLength < 0 ? size : bottomLength;
+        Point RotatePoint(double px, double py)
+        {
+            double radians = rotation * Math.PI / 180.0;
+            double dx = px - x, dy = py - y;
+            return new Point(x + dx * Math.Cos(radians) - dy * Math.Sin(radians), y + dx * Math.Sin(radians) + dy * Math.Cos(radians));
+        }
         void DrawLine(double x1, double y1, double x2, double y2, Brush stroke, double strokeWidth)
         {
+            var p1 = RotatePoint(x1, y1); var p2 = RotatePoint(x2, y2);
+            x1 = p1.X; y1 = p1.Y; x2 = p2.X; y2 = p2.Y;
             var line = new Line { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, Stroke = stroke, Opacity = opacity, StrokeThickness = strokeWidth, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
             c.Children.Add(line);
         }
@@ -440,8 +450,15 @@ try {{
         else if (preset == "dot") { double d = size / 3; EllipseShape(x - d / 2, y - d / 2, d, d, true); }
         else
         {
-            Line(x - leftLength, y, x - gap, y); Line(x + gap, y, x + rightLength, y);
-            Line(x, y - topLength, x, y - gap); Line(x, y + gap, x, y + bottomLength);
+            if (showLeft) Line(x - leftLength, y, x - gap, y);
+            if (showRight) Line(x + gap, y, x + rightLength, y);
+            if (showTop) Line(x, y - topLength, x, y - gap);
+            if (showBottom) Line(x, y + gap, x, y + bottomLength);
+        }
+        if (centerDot)
+        {
+            double d = Math.Max(1, centerDotSize);
+            EllipseShape(x - d / 2, y - d / 2, d, d, true);
         }
     }
 
@@ -451,11 +468,11 @@ try {{
         if (OverlayCheck.IsChecked == true) { _overlay ??= new OverlayWindow(); _overlay.Show(); UpdateOverlay(); }
         else { _overlay?.Close(); _overlay = null; }
     }
-    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
+    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true);
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
-    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true);
 
     private void RefreshProfiles(string? selectName = null)
     {
@@ -501,6 +518,8 @@ try {{
             RightLengthSlider.Value = Math.Clamp(s.RightLength, RightLengthSlider.Minimum, RightLengthSlider.Maximum);
             TopLengthSlider.Value = Math.Clamp(s.TopLength, TopLengthSlider.Minimum, TopLengthSlider.Maximum);
             BottomLengthSlider.Value = Math.Clamp(s.BottomLength, BottomLengthSlider.Minimum, BottomLengthSlider.Maximum);
+            CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
+            ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
             OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -663,9 +682,9 @@ public sealed class OverlayWindow : Window
         };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
-    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1)
+    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true)
     {
         _canvas.Children.Clear();
-        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength);
+        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength, centerDot, centerDotSize, rotation, showLeft, showRight, showTop, showBottom);
     }
 }
