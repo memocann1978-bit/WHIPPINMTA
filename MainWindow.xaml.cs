@@ -270,6 +270,8 @@ try {{
             GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
             _color = s.Color;
             _outlineColor = s.OutlineColor;
+            if (CustomColorBox is not null) CustomColorBox.Text = _color;
+            if (CustomOutlineColorBox is not null) CustomOutlineColorBox.Text = _outlineColor;
             if (OpacitySlider is not null) OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -294,8 +296,50 @@ try {{
         DrawPreview();
     }
 
-    private void Color_Click(object sender, RoutedEventArgs e) { _color = (string)((Button)sender).Tag; DrawPreview(); }
-    private void OutlineColor_Click(object sender, RoutedEventArgs e) { _outlineColor = (string)((Button)sender).Tag; DrawPreview(); }
+    private static string NormalizeHexColor(string value)
+    {
+        var parsed = (Color?)ColorConverter.ConvertFromString(value.Trim());
+        if (parsed is null) throw new FormatException("Renk kodu geçersiz.");
+        return parsed.Value.ToString();
+    }
+
+    private void ApplyCustomColor_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            _color = NormalizeHexColor(CustomColorBox.Text);
+            CustomColorBox.Text = _color;
+            DrawPreview();
+            StatusText.Text = "Crosshair özel rengi uygulandı.";
+        }
+        catch { StatusText.Text = "Geçersiz renk. #RRGGBB veya #AARRGGBB kullan."; }
+    }
+
+    private void ApplyCustomOutlineColor_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            _outlineColor = NormalizeHexColor(CustomOutlineColorBox.Text);
+            CustomOutlineColorBox.Text = _outlineColor;
+            DrawPreview();
+            StatusText.Text = "Dış çizgi özel rengi uygulandı.";
+        }
+        catch { StatusText.Text = "Geçersiz renk. #RRGGBB veya #AARRGGBB kullan."; }
+    }
+
+    private void Color_Click(object sender, RoutedEventArgs e)
+    {
+        _color = NormalizeHexColor((string)((Button)sender).Tag);
+        CustomColorBox.Text = _color;
+        DrawPreview();
+    }
+
+    private void OutlineColor_Click(object sender, RoutedEventArgs e)
+    {
+        _outlineColor = NormalizeHexColor((string)((Button)sender).Tag);
+        CustomOutlineColorBox.Text = _outlineColor;
+        DrawPreview();
+    }
     private void Setting_Changed(object sender, RoutedPropertyChangedEventArgs<double> e) { if (IsLoaded) DrawPreview(); }
     private void SettingToggle_Changed(object sender, RoutedEventArgs e) { if (IsLoaded) DrawPreview(); }
     private void Position_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -433,6 +477,8 @@ try {{
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
             _color = s.Color; _outlineColor = s.OutlineColor; _preset = s.Preset;
+            CustomColorBox.Text = _color;
+            CustomOutlineColorBox.Text = _outlineColor;
             OffsetXSlider.Value = Math.Clamp(s.OffsetX, OffsetXSlider.Minimum, OffsetXSlider.Maximum);
             OffsetYSlider.Value = Math.Clamp(s.OffsetY, OffsetYSlider.Minimum, OffsetYSlider.Maximum);
             OverlayCheck.IsChecked = s.Overlay;
