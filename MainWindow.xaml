@@ -68,7 +68,7 @@
       <Button x:Name="NavHome" Content="⌂    Genel Bakış" Tag="0" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="#FF850A17" BorderBrush="#FFFF2638"/>
       <Button x:Name="NavCrosshair" Content="⌖    Crosshair" Tag="1" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
       <Button x:Name="NavAdvanced" Content="✣    Gelişmiş Ayarlar" Tag="2" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
-      <Button x:Name="NavPosition" Content="⊕    Konum & Overlay" Tag="3" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
+      <Button x:Name="NavPosition" Content="⊕    Konum &amp; Overlay" Tag="3" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
       <Button x:Name="NavHotkeys" Content="⌨    Tuş Kısayolları" Tag="4" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
       <Button x:Name="NavProfiles" Content="▤    Profil Yönetimi" Tag="5" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
       <Button x:Name="NavAbout" Content="ⓘ    Hakkında" Tag="6" Click="Navigation_Click" HorizontalContentAlignment="Left" Padding="13,11" Margin="0,0,0,4" Background="Transparent" BorderThickness="0"/>
@@ -180,7 +180,7 @@
         </UniformGrid>
         <TextBlock Text="Dış çizgi kalınlığı" FontSize="9"/><Slider x:Name="OutlineThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed"/>
         <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
-        <TextBlock Text="MERKEZ NOKTASI & AÇI" Style="{StaticResource FieldLabel}"/>
+        <TextBlock Text="MERKEZ NOKTASI &amp; AÇI" Style="{StaticResource FieldLabel}"/>
         <CheckBox x:Name="CenterDotCheck" Content="Merkez noktasını göster" Click="SettingToggle_Changed"/>
         <TextBlock Text="Merkez nokta boyutu" FontSize="9"/><Slider x:Name="CenterDotSizeSlider" Minimum="1" Maximum="12" Value="3" ValueChanged="Setting_Changed"/>
         <TextBlock Text="Döndürme açısı" FontSize="9"/><Slider x:Name="RotationSlider" Minimum="-180" Maximum="180" Value="0" ValueChanged="Setting_Changed"/>
@@ -189,7 +189,7 @@
      </TabItem>
      <TabItem>
       <StackPanel Margin="20,22,19,20">
-       <TextBlock Text="Konum & Overlay" Style="{StaticResource SectionTitle}"/>
+       <TextBlock Text="Konum &amp; Overlay" Style="{StaticResource SectionTitle}"/>
        <TextBlock Text="Ekrandaki konumu ayarla ve overlay'i yönet." Style="{StaticResource SectionHint}"/>
        <Border Background="#FF111827" BorderBrush="#FF30394D" BorderThickness="1" CornerRadius="9" Padding="14">
         <StackPanel>
