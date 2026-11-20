@@ -142,6 +142,11 @@
          <Button Content="Square" Tag="square" Click="Preset_Click" Margin="3" Padding="7"/>
          <Button Content="Brackets" Tag="brackets" Click="Preset_Click" Margin="3" Padding="7"/>
          <Button Content="Star" Tag="star" Click="Preset_Click" Margin="3" Padding="7"/>
+         <Button Content="X Cross" Tag="x" Click="Preset_Click" Margin="3" Padding="7"/>
+         <Button Content="Target" Tag="target" Click="Preset_Click" Margin="3" Padding="7"/>
+         <Button Content="Ticks" Tag="ticks" Click="Preset_Click" Margin="3" Padding="7"/>
+         <Button Content="Circle Cross" Tag="circlecross" Click="Preset_Click" Margin="3" Padding="7"/>
+         <Button Content="Hollow Dot" Tag="hollowdot" Click="Preset_Click" Margin="3" Padding="7"/>
         </UniformGrid>
        </StackPanel>
       </ScrollViewer>
@@ -194,6 +199,12 @@
         <TextBlock Text="RENK ANİMASYONU" Style="{StaticResource FieldLabel}"/>
         <CheckBox x:Name="RainbowCheck" Content="Rainbow renk döngüsünü etkinleştir" Click="Rainbow_Changed"/>
         <TextBlock Text="Renk geçiş hızı" FontSize="9"/><Slider x:Name="RainbowSpeedSlider" Minimum="80" Maximum="1200" Value="350" ValueChanged="Setting_Changed"/>
+        <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
+        <TextBlock Text="HAREKETLİ CROSSHAIR EFEKTLERİ" Style="{StaticResource FieldLabel}"/>
+        <CheckBox x:Name="PulseCheck" Content="Nabız efekti (boyut ritmik büyüyüp küçülür)" Click="SettingToggle_Changed"/>
+        <CheckBox x:Name="BlinkCheck" Content="Nefes / parlaklık efekti" Click="SettingToggle_Changed"/>
+        <TextBlock Text="Animasyon hızı" FontSize="9"/><Slider x:Name="EffectSpeedSlider" Minimum="20" Maximum="200" Value="100" ValueChanged="Setting_Changed"/>
+        <TextBlock Text="Efektler yalnızca görsel animasyondur; hedef takibi veya otomatik nişan içermez." Foreground="#FF929BAD" FontSize="9" TextWrapping="Wrap" Margin="0,6,0,0"/>
        </StackPanel>
       </ScrollViewer>
      </TabItem>
