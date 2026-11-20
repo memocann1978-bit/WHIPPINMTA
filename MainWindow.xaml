@@ -1,280 +1,175 @@
 <Window x:Class="WHIPPINMTA.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WHIPPINMTA — Crosshair Studio"
-        Height="850" Width="1360" MinHeight="760" MinWidth="1160"
-        WindowStartupLocation="CenterScreen"
-        Background="#FF070B13" Foreground="#FFF4F6FB"
-        FontFamily="Segoe UI" UseLayoutRounding="True">
-    <Window.Resources>
-        <SolidColorBrush x:Key="Panel" Color="#FF111A2A"/>
-        <SolidColorBrush x:Key="Panel2" Color="#FF1B263A"/>
-        <SolidColorBrush x:Key="Muted" Color="#FF8993A6"/>
-        <SolidColorBrush x:Key="Accent" Color="#FFFF3045"/>
-        <Style TargetType="Button">
-            <Setter Property="Foreground" Value="#FFF4F6FB"/>
-            <Setter Property="Background" Value="#FF18243A"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12,9"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bd" Property="Background" Value="#FF3A2634"/><Setter TargetName="bd" Property="Effect"><Setter.Value><DropShadowEffect Color="#FFFF3045" BlurRadius="13" ShadowDepth="0" Opacity="0.22"/></Setter.Value></Setter></Trigger>
-                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="bd" Property="Opacity" Value="0.75"/></Trigger>
-                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="bd" Property="Opacity" Value="0.4"/></Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Background" Value="#FF0D1119"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#FF30394A"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="10,8"/>
-            <Setter Property="CaretBrush" Value="White"/>
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="#FF0D1119"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#FF30394A"/>
-            <Setter Property="Padding" Value="8"/>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="#FFDCE2ED"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="0,4,0,8"/>
-        </Style>
-        <Style TargetType="Slider">
-            <Setter Property="Margin" Value="0,7,0,14"/>
-            <Setter Property="Foreground" Value="#FFFF2638"/>
-        </Style>
-    </Window.Resources>
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="WHIPPINMTA" Height="820" Width="1360" MinHeight="740" MinWidth="1120"
+ WindowStartupLocation="CenterScreen" Background="#FF050913" Foreground="#FFF4F6FB"
+ FontFamily="Segoe UI" UseLayoutRounding="True">
+ <Window.Resources>
+  <SolidColorBrush x:Key="Red" Color="#FFFF101C"/>
+  <Style TargetType="Button">
+   <Setter Property="Foreground" Value="#FFF5F6FA"/><Setter Property="Background" Value="#FF111B2D"/>
+   <Setter Property="BorderBrush" Value="#FF26334B"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="Padding" Value="12,9"/><Setter Property="FontSize" Value="11"/>
+   <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+    <Border x:Name="b" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+    <ControlTemplate.Triggers>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="b" Property="Background" Value="#FF38202B"/><Setter TargetName="b" Property="BorderBrush" Value="#FFFF2638"/></Trigger>
+     <Trigger Property="IsPressed" Value="True"><Setter TargetName="b" Property="Opacity" Value="0.7"/></Trigger>
+     <Trigger Property="IsEnabled" Value="False"><Setter TargetName="b" Property="Opacity" Value="0.4"/></Trigger>
+    </ControlTemplate.Triggers>
+   </ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style TargetType="TextBox"><Setter Property="Background" Value="#FF080E1A"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#FF27344B"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="9,7"/><Setter Property="CaretBrush" Value="White"/></Style>
+  <Style TargetType="ComboBox"><Setter Property="Background" Value="#FF080E1A"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#FF27344B"/><Setter Property="Padding" Value="8"/></Style>
+  <Style TargetType="CheckBox"><Setter Property="Foreground" Value="#FFDCE2ED"/><Setter Property="FontSize" Value="11"/><Setter Property="Margin" Value="0,3,0,5"/></Style>
+  <Style TargetType="Slider"><Setter Property="Margin" Value="0,3,0,8"/><Setter Property="Foreground" Value="#FFFF1726"/></Style>
+ </Window.Resources>
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="238"/><ColumnDefinition Width="390"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Grid.Column="0" Background="#FF080E1A" BorderBrush="#FF26334A" BorderThickness="0,0,1,0">
+   <Grid>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel Margin="18,26,18,24">
+     <TextBlock Text="W" FontSize="54" FontWeight="Black" Foreground="#FFFF101C" HorizontalAlignment="Center"/>
+     <TextBlock Text="WHIPPINMTA" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,-3,0,0"/>
+     <TextBlock Text="Aim. Control. Dominate." FontSize="10" Foreground="#FFFF3344" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+    </StackPanel>
+    <StackPanel Grid.Row="1" Margin="0,8,0,0">
+     <Button Content="⌂   Ana Sayfa" Background="#FF8F0B19" BorderBrush="#FFFF2638" HorizontalContentAlignment="Left" Padding="18,12" Margin="10,0,10,8"/>
+     <Button Content="⌖   Crosshair" HorizontalContentAlignment="Left" Padding="18,11" Margin="10,0,10,4" Click="Preset_Click" Tag="classic"/>
+     <Button Content="♙   Profiller" HorizontalContentAlignment="Left" Padding="18,11" Margin="10,0,10,4" Click="LoadProfile_Click"/>
+     <Button Content="▣   Kısayol Ayarları" HorizontalContentAlignment="Left" Padding="18,11" Margin="10,0,10,4" Click="ApplyHotkey_Click"/>
+     <Button Content="⚙   Ayarlar" HorizontalContentAlignment="Left" Padding="18,11" Margin="10,0,10,4" Click="Save_Click"/>
+     <Button Content="ⓘ   Hakkında" HorizontalContentAlignment="Left" Padding="18,11" Margin="10,0,10,4" Click="CheckUpdate_Click"/>
+    </StackPanel>
+    <StackPanel Grid.Row="2" Margin="20,12,18,18">
+     <TextBlock Text="v1.0.0  •  WHIPPINMTA" Foreground="#FF7D899E" FontSize="10"/>
+     <TextBlock x:Name="StatusText" Text="Hazır. Tasarımını oluştur." Foreground="#FF8993A6" FontSize="9" TextWrapping="Wrap" Margin="0,8,0,0"/>
+    </StackPanel>
+   </Grid>
+  </Border>
+
+  <Border Grid.Column="1" Background="#FF0B1220" BorderBrush="#FF26334A" BorderThickness="0,0,1,0">
+   <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="22,25,20,22">
+     <TextBlock Text="Crosshair Ayarları" FontSize="20" FontWeight="Bold" Foreground="White"/>
+     <TextBlock Text="Oyun içi crosshair görünümünü özelleştir." FontSize="10" Foreground="#FF9AA5B8" Margin="0,4,0,20"/>
+     <TextBlock Text="Crosshair Rengi" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,6"/>
+     <Grid Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBox x:Name="CustomColorBox" Text="#FFFF0000" MaxLength="9" VerticalContentAlignment="Center"/>
+      <Button Grid.Column="1" Content="◉" Click="ApplyCustomColor_Click" Background="#FF1A263B" Margin="7,0,0,0" Padding="11,6"/>
+     </Grid>
+     <UniformGrid Columns="5" Margin="0,0,0,15">
+      <Button Background="#FFFF0000" Tag="#FFFF0000" Click="Color_Click" Height="25" Margin="2" Padding="0"/>
+      <Button Background="#FF39E879" Tag="#FF39E879" Click="Color_Click" Height="25" Margin="2" Padding="0"/>
+      <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="Color_Click" Height="25" Margin="2" Padding="0"/>
+      <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="Color_Click" Height="25" Margin="2" Padding="0"/>
+      <Button Background="#FFFFFF00" Tag="#FFFFFF00" Click="Color_Click" Height="25" Margin="2" Padding="0"/>
+     </UniformGrid>
+     <TextBlock Text="Dış Çizgi Rengi" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,6"/>
+     <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBox x:Name="CustomOutlineColorBox" Text="#FFFFFFFF" MaxLength="9"/>
+      <Button Grid.Column="1" Content="◉" Click="ApplyCustomOutlineColor_Click" Background="#FF1A263B" Margin="7,0,0,0" Padding="11,6"/>
+     </Grid>
+     <UniformGrid Columns="5" Margin="0,0,0,10">
+      <Button Background="#FF000000" Tag="#FF000000" Click="OutlineColor_Click" Height="24" Margin="2" Padding="0"/>
+      <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="OutlineColor_Click" Height="24" Margin="2" Padding="0"/>
+      <Button Background="#FFE34242" Tag="#FFE34242" Click="OutlineColor_Click" Height="24" Margin="2" Padding="0"/>
+      <Button Background="#FF39E879" Tag="#FF39E879" Click="OutlineColor_Click" Height="24" Margin="2" Padding="0"/>
+      <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="OutlineColor_Click" Height="24" Margin="2" Padding="0"/>
+     </UniformGrid>
+     <Separator Background="#FF27344B" Margin="0,6,0,12"/>
+     <TextBlock Text="Boyut" FontSize="11"/><Slider x:Name="SizeSlider" Minimum="4" Maximum="40" Value="14" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Kalınlık" FontSize="11"/><Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Boşluk" FontSize="11"/><Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="6" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Opaklık" FontSize="11"/><Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Value="1" ValueChanged="Setting_Changed"/>
+     <Separator Background="#FF27344B" Margin="0,5,0,12"/>
+     <TextBlock Text="GELİŞMİŞ AYARLAR" FontSize="10" FontWeight="Bold" Foreground="#FFFF5367" Margin="0,0,0,9"/>
+     <TextBlock Text="Hazır tasarımlar" FontSize="11" FontWeight="SemiBold"/>
+     <UniformGrid Columns="3" Margin="0,4,0,10">
+      <Button Content="Classic" Tag="classic" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Minimal" Tag="minimal" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Dot" Tag="dot" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Circle" Tag="circle" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Precision" Tag="precision" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Cross" Tag="cross" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="T-Shape" Tag="tshape" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Chevron" Tag="chevron" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Diamond" Tag="diamond" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Square" Tag="square" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Brackets" Tag="brackets" Click="Preset_Click" Margin="2" Padding="6"/>
+      <Button Content="Star" Tag="star" Click="Preset_Click" Margin="2" Padding="6"/>
+     </UniformGrid>
+     <TextBlock Text="Kol uzunlukları" FontSize="11" FontWeight="SemiBold"/>
+     <TextBlock Text="Sol" FontSize="10"/><Slider x:Name="LeftLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Sağ" FontSize="10"/><Slider x:Name="RightLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Üst" FontSize="10"/><Slider x:Name="TopLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Alt" FontSize="10"/><Slider x:Name="BottomLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+     <Button Content="KOLLARI EŞİTLE" Click="EqualizeArms_Click" Margin="0,0,0,8"/>
+     <UniformGrid Columns="2">
+      <CheckBox x:Name="ShowLeftCheck" Content="Sol kol" IsChecked="True" Click="SettingToggle_Changed"/>
+      <CheckBox x:Name="ShowRightCheck" Content="Sağ kol" IsChecked="True" Click="SettingToggle_Changed"/>
+      <CheckBox x:Name="ShowTopCheck" Content="Üst kol" IsChecked="True" Click="SettingToggle_Changed"/>
+      <CheckBox x:Name="ShowBottomCheck" Content="Alt kol" IsChecked="True" Click="SettingToggle_Changed"/>
+     </UniformGrid>
+     <CheckBox x:Name="OutlineCheck" Content="Dış çizgiyi etkinleştir" IsChecked="True" Click="SettingToggle_Changed"/>
+     <TextBlock Text="Dış çizgi kalınlığı" FontSize="10"/><Slider x:Name="OutlineThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed"/>
+     <CheckBox x:Name="CenterDotCheck" Content="Merkez noktasını göster" Click="SettingToggle_Changed"/>
+     <TextBlock Text="Merkez nokta boyutu" FontSize="10"/><Slider x:Name="CenterDotSizeSlider" Minimum="1" Maximum="12" Value="3" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Açı" FontSize="10"/><Slider x:Name="RotationSlider" Minimum="-180" Maximum="180" Value="0" ValueChanged="Setting_Changed"/>
+     <TextBlock Text="Overlay kısayolu" FontSize="11" FontWeight="SemiBold" Margin="0,8,0,5"/>
+     <TextBox x:Name="HotkeyBox" Text="F8" IsReadOnly="True" Focusable="True" PreviewKeyDown="HotkeyBox_PreviewKeyDown" TextAlignment="Center" FontSize="13" Margin="0,0,0,6"/>
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <Button Content="UYGULA" Click="ApplyHotkey_Click"/><Button Grid.Column="2" Content="VARSAYILAN F8" Click="ResetHotkey_Click"/>
+     </Grid>
+     <Button Content="AYARLARI KAYDET" Click="Save_Click" Background="#FFB5091D" BorderBrush="#FFFF2638" FontSize="12" Padding="12" Margin="0,15,0,4"/>
+    </StackPanel>
+   </ScrollViewer>
+  </Border>
+
+  <Grid Grid.Column="2" Margin="24,25,24,22">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid Margin="0,0,0,18">
+    <StackPanel><TextBlock Text="Crosshair Studio" FontSize="23" FontWeight="Bold"/><TextBlock Text="Oyun deneyimini kişiselleştir." FontSize="11" Foreground="#FF9AA5B8" Margin="0,4,0,0"/></StackPanel>
+    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+     <Button x:Name="CheckUpdateButton" Content="GÜNCELLEME DENETLE" Click="CheckUpdate_Click" Padding="10,7"/>
+     <Button x:Name="InstallUpdateButton" Content="GÜNCELLE" Click="InstallUpdate_Click" Background="#FFB5091D" Visibility="Collapsed" Margin="0,5,0,0"/>
+     <TextBlock x:Name="UpdateStatusText" Text="Güncellemeler denetleniyor..." Foreground="#FF8993A6" FontSize="9" TextAlignment="Right" Margin="0,5,0,0"/>
+    </StackPanel>
+   </Grid>
+   <Border Grid.Row="1" Background="#FF0B1424" BorderBrush="#FF293750" BorderThickness="1" CornerRadius="13" Padding="14">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="340"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- LEFT CONTROL SIDEBAR -->
-        <Border Grid.Column="0" Background="#FF0A1220" BorderBrush="#FF26334A" BorderThickness="0,0,1,0">
-            <Grid>
-                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                <StackPanel Margin="24,24,22,20">
-                    <StackPanel Orientation="Horizontal">
-                        <Border Width="38" Height="38" CornerRadius="11" Background="#FFFF3045" VerticalAlignment="Center">
-                            <TextBlock Text="W" FontSize="22" FontWeight="Black" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="WHIPPINMTA" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="AIM. CONTROL. DOMINATE." FontSize="9" Foreground="#FF8D98AC" FontWeight="Bold"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <Border Height="1" Background="#FF26364F" Margin="0,20,0,17"/>
-                    <TextBlock Text="CONTROL CENTER  /  SETTINGS" FontSize="9" FontWeight="Bold" Foreground="#FFFF5367" Margin="0,0,0,14"/>
-                </StackPanel>
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="22,0,22,18">
-                        <TextBlock Text="01  TASARIM" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,10"/>
-                        <TextBlock Text="Hazır crosshair tasarımları" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,9"/>
-                        <UniformGrid Columns="3" Rows="4" Margin="0,0,0,21">
-                            <Button Content="Classic" Tag="classic" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Minimal" Tag="minimal" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Dot" Tag="dot" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Circle" Tag="circle" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Precision" Tag="precision" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Cross" Tag="cross" Click="Preset_Click" Margin="3"/>
-                            <Button Content="T-Shape" Tag="tshape" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Chevron" Tag="chevron" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Diamond" Tag="diamond" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Square" Tag="square" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Brackets" Tag="brackets" Click="Preset_Click" Margin="3"/>
-                            <Button Content="Star" Tag="star" Click="Preset_Click" Margin="3"/>
-                        </UniformGrid>
-
-                        <Border Background="#FF111D30" CornerRadius="13" Padding="14" BorderBrush="#FF26364F" BorderThickness="1" Margin="0,0,0,20">
-                            <StackPanel>
-                                <TextBlock Text="PROFİLLERİM" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966" Margin="0,0,0,10"/>
-                                <TextBox x:Name="ProfileNameBox" Text="Yeni profil" Margin="0,0,0,8"/>
-                                <Button Content="＋  PROFİLİ KAYDET" Click="SaveProfile_Click" Background="#FF1D2D48" Margin="0,0,0,8"/>
-                                <ComboBox x:Name="ProfileCombo" Margin="0,0,0,8"/>
-                                <Button Content="SEÇİLİ PROFİLİ YÜKLE" Click="LoadProfile_Click" Background="#FF1D2D48" Margin="0,0,0,8"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Content="YENİDEN ADLANDIR" Click="RenameProfile_Click" Background="#FF1D2D48" Padding="7"/>
-                                    <Button Grid.Column="2" Content="PROFİLİ SİL" Click="DeleteProfile_Click" Background="#FF633746" Padding="7"/>
-                                </Grid>
-                                <Grid Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Content="DIŞA AKTAR ↗" Click="ExportProfile_Click" Background="#FF1D2D48" Padding="8"/>
-                                    <Button Grid.Column="2" Content="İÇE AKTAR ↙" Click="ImportProfile_Click" Background="#FF1D2D48" Padding="8"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <TextBlock Text="02  CROSSHAIR AYARLARI" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,12"/>
-                        <TextBlock Text="Boyut" FontSize="12" FontWeight="SemiBold"/>
-                        <Slider x:Name="SizeSlider" Minimum="4" Maximum="40" Value="18" ValueChanged="Setting_Changed"/>
-                        <TextBlock Text="Çizgi kalınlığı" FontSize="12" FontWeight="SemiBold"/>
-                        <Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed"/>
-                        <TextBlock Text="Merkez boşluğu" FontSize="12" FontWeight="SemiBold"/>
-                        <Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="5" ValueChanged="Setting_Changed"/>
-                        <Border Background="#FF111D30" CornerRadius="12" Padding="12" BorderBrush="#FF26364F" BorderThickness="1" Margin="0,2,0,12">
-                            <StackPanel>
-                                <TextBlock Text="KOL UZUNLUKLARI" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966" Margin="0,0,0,9"/>
-                                <TextBlock Text="Sol kol" FontSize="11"/>
-                                <Slider x:Name="LeftLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
-                                <TextBlock Text="Sağ kol" FontSize="11"/>
-                                <Slider x:Name="RightLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
-                                <TextBlock Text="Üst kol" FontSize="11"/>
-                                <Slider x:Name="TopLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
-                                <TextBlock Text="Alt kol" FontSize="11"/>
-                                <Slider x:Name="BottomLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
-                                <Button Content="KOLLARI EŞİTLE" Click="EqualizeArms_Click" Background="#FF1D2D48" Padding="8" Margin="0,3,0,0"/>
-                                <TextBlock Text="KOL GÖRÜNÜRLÜĞÜ" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966" Margin="0,14,0,7"/>
-                                <UniformGrid Columns="2">
-                                    <CheckBox x:Name="ShowLeftCheck" Content="Sol kol" IsChecked="True" Click="SettingToggle_Changed"/>
-                                    <CheckBox x:Name="ShowRightCheck" Content="Sağ kol" IsChecked="True" Click="SettingToggle_Changed"/>
-                                    <CheckBox x:Name="ShowTopCheck" Content="Üst kol" IsChecked="True" Click="SettingToggle_Changed"/>
-                                    <CheckBox x:Name="ShowBottomCheck" Content="Alt kol" IsChecked="True" Click="SettingToggle_Changed"/>
-                                </UniformGrid>
-                                <CheckBox x:Name="CenterDotCheck" Content="Merkez noktasını göster" IsChecked="False" Click="SettingToggle_Changed"/>
-                                <TextBlock Text="Merkez noktası boyutu" FontSize="11"/>
-                                <Slider x:Name="CenterDotSizeSlider" Minimum="1" Maximum="12" Value="3" ValueChanged="Setting_Changed"/>
-                                <TextBlock Text="Crosshair açısı" FontSize="11"/>
-                                <Slider x:Name="RotationSlider" Minimum="-180" Maximum="180" Value="0" ValueChanged="Setting_Changed"/>
-                            </StackPanel>
-                        </Border>
-                        <TextBlock Text="Opaklık" FontSize="12" FontWeight="SemiBold"/>
-                        <Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Value="1" ValueChanged="Setting_Changed"/>
-
-                        <Border Height="1" Background="#FF26364F" Margin="0,0,0,17"/>
-                        <TextBlock Text="03  RENK VE KENARLIK" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,12"/>
-                        <TextBlock Text="Crosshair rengi" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                        <UniformGrid Columns="5" Margin="0,0,0,16">
-                            <Button Background="#FFFF4242" Tag="#FFFF4242" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FF39E879" Tag="#FF39E879" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FFFFFF00" Tag="#FFFFFF00" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
-                        </UniformGrid>
-                        <TextBlock Text="Özel renk (HEX)" FontSize="11" Foreground="#FF8993A6" Margin="0,0,0,6"/>
-                        <Grid Margin="0,0,0,14">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBox x:Name="CustomColorBox" Text="#FFFF4242" MaxLength="9"/>
-                            <Button Grid.Column="2" Content="UYGULA" Click="ApplyCustomColor_Click" Padding="10,7"/>
-                        </Grid>
-                        <CheckBox x:Name="OutlineCheck" Content="Dış çizgiyi etkinleştir" IsChecked="True" Click="SettingToggle_Changed"/>
-                        <TextBlock Text="Dış çizgi kalınlığı" FontSize="12" FontWeight="SemiBold"/>
-                        <Slider x:Name="OutlineThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed"/>
-                        <TextBlock Text="Dış çizgi rengi" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                        <UniformGrid Columns="5" Margin="0,0,0,10">
-                            <Button Background="#FF000000" Tag="#FF000000" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FFE34242" Tag="#FFE34242" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FF39E879" Tag="#FF39E879" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
-                            <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
-                        </UniformGrid>
-                        <TextBlock Text="Özel dış çizgi rengi (HEX)" FontSize="11" Foreground="#FF8993A6" Margin="0,0,0,6"/>
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBox x:Name="CustomOutlineColorBox" Text="#FF000000" MaxLength="9"/>
-                            <Button Grid.Column="2" Content="UYGULA" Click="ApplyCustomOutlineColor_Click" Padding="10,7"/>
-                        </Grid>
-                        <Border Height="1" Background="#FF26364F" Margin="0,8,0,17"/>
-                        <TextBlock Text="04  KISAYOL AYARLARI" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,12"/>
-                        <TextBlock Text="Overlay aç / kapat" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,7"/>
-                        <TextBlock Text="Tuşu değiştirmek için aşağıdaki alana tıkla ve klavyeden yeni kombinasyonu bas." FontSize="10" Foreground="#FF8993A6" TextWrapping="Wrap" Margin="0,0,0,9"/>
-                        <TextBox x:Name="HotkeyBox" Text="F8" IsReadOnly="True" Focusable="True" PreviewKeyDown="HotkeyBox_PreviewKeyDown" FontSize="14" FontWeight="Bold" TextAlignment="Center" Padding="10" Margin="0,0,0,8" Cursor="Hand"/>
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="KISAYOLU UYGULA" Click="ApplyHotkey_Click" Background="#FF1D2D48" Padding="7"/>
-                            <Button Grid.Column="2" Content="VARSAYILAN F8" Click="ResetHotkey_Click" Background="#FF1D2D48" Padding="7"/>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-                <StackPanel Grid.Row="2" Margin="22,12,22,20">
-                    <Button Content="AYARLARI KAYDET" Click="Save_Click" Background="#FFFF3045" FontSize="12" Padding="14" Margin="0,0,0,8"/>
-                    <TextBlock x:Name="StatusText" Text="Hazır. Tasarımını oluştur." Foreground="#FF8993A6" FontSize="10" TextWrapping="Wrap"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- MAIN WORKSPACE -->
-        <Grid Grid.Column="1" Margin="30,26,30,27">
-            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-            <Grid Margin="0,0,0,20">
-                <StackPanel>
-                    <TextBlock Text="WHIPPINMTA  /  STUDIO" FontSize="10" FontWeight="Bold" Foreground="#FFFF5367" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="CROSSHAIR CONTROL CENTER" FontSize="24" FontWeight="Bold" Foreground="White" Foreground="#FF8993A6" Margin="1,5,0,0"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="CheckUpdateButton" Content="GÜNCELLEME DENETLE" Click="CheckUpdate_Click" Background="#FF17263D" Margin="0,0,8,0"/>
-                        <Button x:Name="InstallUpdateButton" Content="GÜNCELLE" Click="InstallUpdate_Click" Background="#FFFF2638" Visibility="Collapsed"/>
-                    </StackPanel>
-                    <TextBlock x:Name="UpdateStatusText" Text="Güncellemeler denetleniyor..." Foreground="#FF8993A6" FontSize="9" TextAlignment="Right" Margin="0,7,2,0"/>
-                </StackPanel>
-            </Grid>
-
-            <Border Grid.Row="1" Background="#FF0C1422" CornerRadius="20" BorderBrush="#FF2A3850" BorderThickness="1" Padding="19">
-                <Grid>
-                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                    <Grid>
-                        <TextBlock Text="CANLI ÖNİZLEME" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966"/>
-                        <Border HorizontalAlignment="Right" Background="#FF1B2730" CornerRadius="20" Padding="9,4">
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="6" Height="6" Fill="#FF39E879" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <TextBlock Text="LIVE PREVIEW" FontSize="9" FontWeight="Bold" Foreground="#FF9EEDB7"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                    <Border Grid.Row="1" Background="#FF080D16" CornerRadius="15" Margin="0,15,0,15" BorderBrush="#FF34435B" BorderThickness="1">
-                        <Canvas x:Name="PreviewCanvas" ClipToBounds="True" MouseLeftButtonDown="Preview_MouseDown" MouseMove="Preview_MouseMove" MouseLeftButtonUp="Preview_MouseUp">
-                            <Canvas.Background>
-                                <DrawingBrush TileMode="Tile" Viewport="0,0,28,28" ViewportUnits="Absolute">
-                                    <DrawingBrush.Drawing><DrawingGroup>
-                                        <GeometryDrawing Brush="#FF0D121B"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,28,28"/></GeometryDrawing.Geometry></GeometryDrawing>
-                                        <GeometryDrawing Brush="#FF172131"><GeometryDrawing.Geometry><GeometryGroup><RectangleGeometry Rect="0,0,1,28"/><RectangleGeometry Rect="0,0,28,1"/></GeometryGroup></GeometryDrawing.Geometry></GeometryDrawing>
-                                    </DrawingGroup></DrawingBrush.Drawing>
-                                </DrawingBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                    </Border>
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="KONUM AYARI" FontSize="9" FontWeight="Bold" Foreground="#FF8993A6" Margin="0,0,0,9"/>
-                            <DockPanel Margin="0,0,0,5"><TextBlock Text="X" Foreground="#FF8993A6" Width="20" VerticalAlignment="Center"/><Slider x:Name="OffsetXSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetXText" Text="0" Foreground="White" Width="45" TextAlignment="Right" VerticalAlignment="Center"/></DockPanel>
-                            <DockPanel><TextBlock Text="Y" Foreground="#FF8993A6" Width="20" VerticalAlignment="Center"/><Slider x:Name="OffsetYSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetYText" Text="0" Foreground="White" Width="45" TextAlignment="Right" VerticalAlignment="Center"/></DockPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="18,0,0,0">
-                            <Button Content="MERKEZE AL" Click="Center_Click" Background="#FF17263D" Margin="0,0,0,8"/>
-                            <TextBlock Text="Önizlemeyi sürükleyerek de taşıyabilirsin." Foreground="#FF8993A6" FontSize="9" TextWrapping="Wrap" Width="165"/>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="2" Background="#FF111B2C" CornerRadius="14" Padding="17" Margin="0,16,0,0" BorderBrush="#FF2A3850" BorderThickness="1">
-                <Grid>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="OYUN İÇİ OVERLAY" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966"/>
-                        <TextBlock Text="F8 tuşuyla istediğin an açıp kapat." FontSize="10" Foreground="#FF8993A6" Margin="0,4,0,0"/>
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <CheckBox x:Name="OverlayCheck" Content="Overlay etkin" Checked="Overlay_Changed" Unchecked="Overlay_Changed" Margin="0"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </Grid>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <TextBlock Text="CANLI ÖNİZLEME" FontSize="10" FontWeight="Bold" Foreground="#FFFF5367"/>
+     <Border Grid.Row="1" Background="#FF111827" BorderBrush="#FF3A455C" BorderThickness="1" CornerRadius="8" Margin="0,12,0,12">
+      <Canvas x:Name="PreviewCanvas" ClipToBounds="True" MouseLeftButtonDown="Preview_MouseDown" MouseMove="Preview_MouseMove" MouseLeftButtonUp="Preview_MouseUp">
+       <Canvas.Background><DrawingBrush TileMode="Tile" Viewport="0,0,30,30" ViewportUnits="Absolute"><DrawingBrush.Drawing><DrawingGroup>
+        <GeometryDrawing Brush="#FF111827"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,30,30"/></GeometryDrawing.Geometry></GeometryDrawing>
+        <GeometryDrawing Brush="#FF1B2638"><GeometryDrawing.Geometry><GeometryGroup><RectangleGeometry Rect="0,0,1,30"/><RectangleGeometry Rect="0,0,30,1"/></GeometryGroup></GeometryDrawing.Geometry></GeometryDrawing>
+       </DrawingGroup></DrawingBrush.Drawing></DrawingBrush></Canvas.Background>
+      </Canvas>
+     </Border>
+     <StackPanel Grid.Row="2">
+      <TextBlock Text="KONUM" FontSize="10" FontWeight="Bold" Foreground="#FF9AA5B8" Margin="0,0,0,7"/>
+      <DockPanel Margin="0,0,0,5"><TextBlock Text="X" Width="18" VerticalAlignment="Center" Foreground="#FF9AA5B8"/><Slider x:Name="OffsetXSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed"/><TextBlock x:Name="OffsetXText" Text="0" Width="40" TextAlignment="Right" VerticalAlignment="Center"/></DockPanel>
+      <DockPanel><TextBlock Text="Y" Width="18" VerticalAlignment="Center" Foreground="#FF9AA5B8"/><Slider x:Name="OffsetYSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed"/><TextBlock x:Name="OffsetYText" Text="0" Width="40" TextAlignment="Right" VerticalAlignment="Center"/></DockPanel>
+      <Button Content="KONUMU SIFIRLA" Click="Center_Click" Margin="0,8,0,0"/>
+     </StackPanel>
     </Grid>
+   </Border>
+   <Border Grid.Row="2" Background="#FF0B1424" BorderBrush="#FF293750" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,13,0,0">
+    <Grid>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <StackPanel VerticalAlignment="Center"><TextBlock Text="PROFİL" FontSize="10" FontWeight="Bold" Foreground="#FFFF5367"/><TextBlock Text="Ayarlarını kaydet ve yükle" FontSize="9" Foreground="#FF8993A6"/></StackPanel>
+     <ComboBox x:Name="ProfileCombo" Grid.Column="1" VerticalAlignment="Center" Margin="10,0" MinWidth="90"/>
+     <Button Grid.Column="2" Content="＋" Click="SaveProfile_Click" ToolTip="Profil kaydet" Padding="13,8"/>
+     <Button Grid.Column="4" Content="YÜKLE" Click="LoadProfile_Click" Padding="15,8"/>
+    </Grid>
+   </Border>
+   <CheckBox x:Name="OverlayCheck" Grid.Row="2" Content="Overlay etkin" Checked="Overlay_Changed" Unchecked="Overlay_Changed" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-28,8,0"/>
+  </Grid>
+ </Grid>
 </Window>
