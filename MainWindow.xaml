@@ -129,6 +129,12 @@
                             <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
                             <Button Background="#FFFFFF00" Tag="#FFFFFF00" Click="Color_Click" Height="30" Margin="2" Padding="0"/>
                         </UniformGrid>
+                        <TextBlock Text="Özel renk (HEX)" FontSize="11" Foreground="#FF8993A6" Margin="0,0,0,6"/>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBox x:Name="CustomColorBox" Text="#FFFF4242" MaxLength="9"/>
+                            <Button Grid.Column="2" Content="UYGULA" Click="ApplyCustomColor_Click" Padding="10,7"/>
+                        </Grid>
                         <CheckBox x:Name="OutlineCheck" Content="Dış çizgiyi etkinleştir" IsChecked="True" Click="SettingToggle_Changed"/>
                         <TextBlock Text="Dış çizgi kalınlığı" FontSize="12" FontWeight="SemiBold"/>
                         <Slider x:Name="OutlineThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed"/>
@@ -140,6 +146,12 @@
                             <Button Background="#FF39E879" Tag="#FF39E879" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
                             <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
                         </UniformGrid>
+                        <TextBlock Text="Özel dış çizgi rengi (HEX)" FontSize="11" Foreground="#FF8993A6" Margin="0,0,0,6"/>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBox x:Name="CustomOutlineColorBox" Text="#FF000000" MaxLength="9"/>
+                            <Button Grid.Column="2" Content="UYGULA" Click="ApplyCustomOutlineColor_Click" Padding="10,7"/>
+                        </Grid>
                         <Border Height="1" Background="#FF252D3B" Margin="0,8,0,17"/>
                         <TextBlock Text="04  KISAYOL AYARLARI" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,12"/>
                         <TextBlock Text="Overlay aç / kapat" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,7"/>
