@@ -162,11 +162,12 @@
    </Border>
    <Border Grid.Row="2" Background="#FF0B1424" BorderBrush="#FF293750" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,13,0,0">
     <Grid>
-     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <StackPanel VerticalAlignment="Center"><TextBlock Text="PROFİL" FontSize="10" FontWeight="Bold" Foreground="#FFFF5367"/><TextBlock Text="Ayarlarını kaydet ve yükle" FontSize="9" Foreground="#FF8993A6"/></StackPanel>
-     <ComboBox x:Name="ProfileCombo" Grid.Column="1" VerticalAlignment="Center" Margin="10,0" MinWidth="90"/>
-     <Button Grid.Column="2" Content="＋" Click="SaveProfile_Click" ToolTip="Profil kaydet" Padding="13,8"/>
-     <Button Grid.Column="4" Content="YÜKLE" Click="LoadProfile_Click" Padding="15,8"/>
+     <TextBox x:Name="ProfileNameBox" Grid.Column="1" Text="Yeni profil" VerticalAlignment="Center" Margin="10,0"/>
+     <ComboBox x:Name="ProfileCombo" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="90"/>
+     <Button Grid.Column="3" Content="＋" Click="SaveProfile_Click" ToolTip="Profil kaydet" Padding="13,8"/>
+     <Button Grid.Column="5" Content="YÜKLE" Click="LoadProfile_Click" Padding="15,8"/>
     </Grid>
    </Border>
    <CheckBox x:Name="OverlayCheck" Grid.Row="2" Content="Overlay etkin" Checked="Overlay_Changed" Unchecked="Overlay_Changed" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-28,8,0"/>
