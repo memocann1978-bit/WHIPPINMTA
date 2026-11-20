@@ -44,7 +44,7 @@
       <DockPanel Margin="0,0,0,2"><TextBlock Text="Yatay" Foreground="#FF858895" Width="48"/><Slider x:Name="OffsetXSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetXText" Text="0" Foreground="#FFE5E5E8" Width="42" TextAlignment="Right"/></DockPanel>
       <DockPanel Margin="0,0,0,8"><TextBlock Text="Dikey" Foreground="#FF858895" Width="48"/><Slider x:Name="OffsetYSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetYText" Text="0" Foreground="#FFE5E5E8" Width="42" TextAlignment="Right"/></DockPanel>
       <Button Content="MERKEZE AL" Click="Center_Click" Padding="7" Background="#FF292C35" Foreground="White" BorderThickness="0" Margin="0,0,0,10"/>
-      <CheckBox x:Name="OverlayCheck" Content="Masaüstü overlay'ini etkinleştir" Foreground="#FFE5E5E8" Checked="Overlay_Changed" Unchecked="Overlay_Changed" Margin="0,0,0,14"/>
+      <CheckBox x:Name="OverlayCheck" Content="Masaüstü overlay'ini etkinleştir" Foreground="#FFE5E5E8" Checked="Overlay_Changed" Unchecked="Overlay_Changed" Margin="0,0,0,3"/><TextBlock Text="F8: Oyundayken overlay'i aç / kapat" Foreground="#FF858895" FontSize="10" Margin="0,0,0,14"/>
       <Button Content="AYARLARI KAYDET" Click="Save_Click" Padding="12" Background="#FFE34242" Foreground="White" FontWeight="Bold" BorderThickness="0" Margin="0,0,0,8"/>
       <TextBlock x:Name="StatusText" Text="Hazır. Tasarımını seç ve önizle." Foreground="#FF858895" FontSize="11" TextWrapping="Wrap"/>
      </StackPanel>
