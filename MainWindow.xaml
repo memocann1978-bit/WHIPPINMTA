@@ -75,7 +75,7 @@
                         </Border>
                         <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="WHIPPINMTA" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="CROSSHAIR STUDIO" FontSize="9" Foreground="#FF8D98AC" FontWeight="Bold" CharacterSpacing="180"/>
+                            <TextBlock Text="CROSSHAIR STUDIO" FontSize="9" Foreground="#FF8D98AC" FontWeight="Bold"/>
                         </StackPanel>
                     </StackPanel>
                     <Border Height="1" Background="#FF252D3B" Margin="0,20,0,17"/>
