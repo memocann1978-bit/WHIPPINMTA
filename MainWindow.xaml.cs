@@ -34,7 +34,7 @@ public partial class MainWindow : Window
     private const uint MOD_NOREPEAT = 0x4000;
     private string _overlayHotkey = "F8";
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8");
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18);
 
     public MainWindow()
     {
@@ -268,6 +268,10 @@ try {{
             SizeSlider.Value = Math.Clamp(s.Size, SizeSlider.Minimum, SizeSlider.Maximum);
             ThicknessSlider.Value = Math.Clamp(s.Thickness, ThicknessSlider.Minimum, ThicknessSlider.Maximum);
             GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
+            LeftLengthSlider.Value = Math.Clamp(s.LeftLength, LeftLengthSlider.Minimum, LeftLengthSlider.Maximum);
+            RightLengthSlider.Value = Math.Clamp(s.RightLength, RightLengthSlider.Minimum, RightLengthSlider.Maximum);
+            TopLengthSlider.Value = Math.Clamp(s.TopLength, TopLengthSlider.Minimum, TopLengthSlider.Maximum);
+            BottomLengthSlider.Value = Math.Clamp(s.BottomLength, BottomLengthSlider.Minimum, BottomLengthSlider.Maximum);
             _color = s.Color;
             _outlineColor = s.OutlineColor;
             if (CustomColorBox is not null) CustomColorBox.Text = _color;
@@ -340,7 +344,23 @@ try {{
         CustomOutlineColorBox.Text = _outlineColor;
         DrawPreview();
     }
-    private void Setting_Changed(object sender, RoutedPropertyChangedEventArgs<double> e) { if (IsLoaded) DrawPreview(); }
+    private void Setting_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!IsLoaded) return;
+        if (ReferenceEquals(sender, SizeSlider))
+        {
+            LeftLengthSlider.Value = RightLengthSlider.Value = TopLengthSlider.Value = BottomLengthSlider.Value = SizeSlider.Value;
+        }
+        DrawPreview();
+    }
+
+    private void EqualizeArms_Click(object sender, RoutedEventArgs e)
+    {
+        var length = (LeftLengthSlider.Value + RightLengthSlider.Value + TopLengthSlider.Value + BottomLengthSlider.Value) / 4;
+        LeftLengthSlider.Value = RightLengthSlider.Value = TopLengthSlider.Value = BottomLengthSlider.Value = length;
+        SizeSlider.Value = length;
+        StatusText.Text = "Dört kol eşit uzunluğa getirildi.";
+    }
     private void SettingToggle_Changed(object sender, RoutedEventArgs e) { if (IsLoaded) DrawPreview(); }
     private void Position_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
@@ -380,15 +400,19 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
         UpdateOverlay();
     }
 
-    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000")
+    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1)
     {
         var brush = (Brush)new BrushConverter().ConvertFromString(color)!;
         var outlineBrush = (Brush)new BrushConverter().ConvertFromString(outlineColor)!;
         double outer = Math.Max(0, outlineThickness) * 2;
+        leftLength = leftLength < 0 ? size : leftLength;
+        rightLength = rightLength < 0 ? size : rightLength;
+        topLength = topLength < 0 ? size : topLength;
+        bottomLength = bottomLength < 0 ? size : bottomLength;
         void DrawLine(double x1, double y1, double x2, double y2, Brush stroke, double strokeWidth)
         {
             var line = new Line { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, Stroke = stroke, Opacity = opacity, StrokeThickness = strokeWidth, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
@@ -416,8 +440,8 @@ try {{
         else if (preset == "dot") { double d = size / 3; EllipseShape(x - d / 2, y - d / 2, d, d, true); }
         else
         {
-            Line(x - size / 2, y, x - gap, y); Line(x + gap, y, x + size / 2, y);
-            Line(x, y - size / 2, x, y - gap); Line(x, y + gap, x, y + size / 2);
+            Line(x - leftLength, y, x - gap, y); Line(x + gap, y, x + rightLength, y);
+            Line(x, y - topLength, x, y - gap); Line(x, y + gap, x, y + bottomLength);
         }
     }
 
@@ -427,11 +451,11 @@ try {{
         if (OverlayCheck.IsChecked == true) { _overlay ??= new OverlayWindow(); _overlay.Show(); UpdateOverlay(); }
         else { _overlay?.Close(); _overlay = null; }
     }
-    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
+    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
-    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey);
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value);
 
     private void RefreshProfiles(string? selectName = null)
     {
@@ -473,6 +497,10 @@ try {{
             SizeSlider.Value = Math.Clamp(s.Size, SizeSlider.Minimum, SizeSlider.Maximum);
             ThicknessSlider.Value = Math.Clamp(s.Thickness, ThicknessSlider.Minimum, ThicknessSlider.Maximum);
             GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
+            LeftLengthSlider.Value = Math.Clamp(s.LeftLength, LeftLengthSlider.Minimum, LeftLengthSlider.Maximum);
+            RightLengthSlider.Value = Math.Clamp(s.RightLength, RightLengthSlider.Minimum, RightLengthSlider.Maximum);
+            TopLengthSlider.Value = Math.Clamp(s.TopLength, TopLengthSlider.Minimum, TopLengthSlider.Maximum);
+            BottomLengthSlider.Value = Math.Clamp(s.BottomLength, BottomLengthSlider.Minimum, BottomLengthSlider.Maximum);
             OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -635,9 +663,9 @@ public sealed class OverlayWindow : Window
         };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
-    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000")
+    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1)
     {
         _canvas.Children.Clear();
-        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor);
+        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength);
     }
 }
