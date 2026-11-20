@@ -37,9 +37,13 @@
      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
      <DockPanel><TextBlock Text="CANLI ÖNİZLEME" FontSize="13" FontWeight="Bold" Foreground="#FFE86A6A"/><TextBlock Text="PREVIEW" DockPanel.Dock="Right" Foreground="#FF777B87" FontSize="10"/></DockPanel>
      <Border Grid.Row="1" Background="#FF0D0F13" CornerRadius="12" Margin="0,16,0,16">
-      <Canvas x:Name="PreviewCanvas" ClipToBounds="True"><Canvas.Background><DrawingBrush TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute"><DrawingBrush.Drawing><GeometryDrawing Brush="#FF11141A"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,24,24"/></GeometryDrawing.Geometry></GeometryDrawing></DrawingBrush.Drawing></DrawingBrush></Canvas.Background></Canvas>
+      <Canvas x:Name="PreviewCanvas" ClipToBounds="True" MouseLeftButtonDown="Preview_MouseDown" MouseMove="Preview_MouseMove" MouseLeftButtonUp="Preview_MouseUp"><Canvas.Background><DrawingBrush TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute"><DrawingBrush.Drawing><GeometryDrawing Brush="#FF11141A"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,24,24"/></GeometryDrawing.Geometry></GeometryDrawing></DrawingBrush.Drawing></DrawingBrush></Canvas.Background></Canvas>
      </Border>
      <StackPanel Grid.Row="2">
+      <TextBlock Text="Konum (X / Y)" Foreground="#FFB8BAC4" Margin="0,0,0,4"/>
+      <DockPanel Margin="0,0,0,2"><TextBlock Text="Yatay" Foreground="#FF858895" Width="48"/><Slider x:Name="OffsetXSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetXText" Text="0" Foreground="#FFE5E5E8" Width="42" TextAlignment="Right"/></DockPanel>
+      <DockPanel Margin="0,0,0,8"><TextBlock Text="Dikey" Foreground="#FF858895" Width="48"/><Slider x:Name="OffsetYSlider" Minimum="-500" Maximum="500" Value="0" ValueChanged="Position_Changed" VerticalAlignment="Center"/><TextBlock x:Name="OffsetYText" Text="0" Foreground="#FFE5E5E8" Width="42" TextAlignment="Right"/></DockPanel>
+      <Button Content="MERKEZE AL" Click="Center_Click" Padding="7" Background="#FF292C35" Foreground="White" BorderThickness="0" Margin="0,0,0,10"/>
       <CheckBox x:Name="OverlayCheck" Content="Masaüstü overlay'ini etkinleştir" Foreground="#FFE5E5E8" Checked="Overlay_Changed" Unchecked="Overlay_Changed" Margin="0,0,0,14"/>
       <Button Content="AYARLARI KAYDET" Click="Save_Click" Padding="12" Background="#FFE34242" Foreground="White" FontWeight="Bold" BorderThickness="0" Margin="0,0,0,8"/>
       <TextBlock x:Name="StatusText" Text="Hazır. Tasarımını seç ve önizle." Foreground="#FF858895" FontSize="11" TextWrapping="Wrap"/>
