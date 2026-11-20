@@ -19,6 +19,11 @@
       <Button Content="Precision" Tag="precision" Click="Preset_Click" Margin="3" Padding="8" Background="#FF292C35" Foreground="White" BorderThickness="0"/>
       <Button Content="Cross" Tag="cross" Click="Preset_Click" Margin="3" Padding="8" Background="#FF292C35" Foreground="White" BorderThickness="0"/>
      </UniformGrid>
+     <TextBlock Text="PROFİLLERİM" FontSize="11" FontWeight="Bold" Foreground="#FFE86A6A" Margin="0,0,0,8"/>
+     <TextBox x:Name="ProfileNameBox" Text="Yeni profil" Padding="8" Background="#FF22252D" Foreground="White" BorderBrush="#FF393D48" Margin="0,0,0,7"/>
+     <Button Content="PROFİLİ KAYDET" Click="SaveProfile_Click" Padding="8" Background="#FF292C35" Foreground="White" BorderThickness="0" Margin="0,0,0,7"/>
+     <ComboBox x:Name="ProfileCombo" Padding="7" Background="#FF22252D" Foreground="#FF17191F" BorderThickness="0" Margin="0,0,0,7"/>
+     <Button Content="SEÇİLİ PROFİLİ YÜKLE" Click="LoadProfile_Click" Padding="8" Background="#FF292C35" Foreground="White" BorderThickness="0" Margin="0,0,0,18"/>
      <TextBlock Text="Boyut" Foreground="#FFB8BAC4"/><Slider x:Name="SizeSlider" Minimum="4" Maximum="40" Value="18" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Çizgi kalınlığı" Foreground="#FFB8BAC4"/><Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Merkez boşluğu" Foreground="#FFB8BAC4"/><Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="5" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
