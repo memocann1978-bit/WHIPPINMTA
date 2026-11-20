@@ -100,7 +100,12 @@
                                 <TextBox x:Name="ProfileNameBox" Text="Yeni profil" Margin="0,0,0,8"/>
                                 <Button Content="＋  PROFİLİ KAYDET" Click="SaveProfile_Click" Background="#FF293449" Margin="0,0,0,8"/>
                                 <ComboBox x:Name="ProfileCombo" Margin="0,0,0,8"/>
-                                <Button Content="SEÇİLİ PROFİLİ YÜKLE" Click="LoadProfile_Click" Background="#FF293449"/>
+                                <Button Content="SEÇİLİ PROFİLİ YÜKLE" Click="LoadProfile_Click" Background="#FF293449" Margin="0,0,0,8"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="YENİDEN ADLANDIR" Click="RenameProfile_Click" Background="#FF293449" Padding="7"/>
+                                    <Button Grid.Column="2" Content="PROFİLİ SİL" Click="DeleteProfile_Click" Background="#FF633746" Padding="7"/>
+                                </Grid>
                             </StackPanel>
                         </Border>
 
