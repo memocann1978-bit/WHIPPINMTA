@@ -27,9 +27,14 @@ public partial class MainWindow : Window
     private HwndSource? _hotkeySource;
     private const int HotkeyId = 1978;
     private const int WM_HOTKEY = 0x0312;
+    private const uint MOD_ALT = 0x0001;
+    private const uint MOD_CONTROL = 0x0002;
+    private const uint MOD_SHIFT = 0x0004;
+    private const uint MOD_WIN = 0x0008;
     private const uint MOD_NOREPEAT = 0x4000;
+    private string _overlayHotkey = "F8";
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000");
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8");
 
     public MainWindow()
     {
@@ -51,13 +56,94 @@ public partial class MainWindow : Window
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-    private void RegisterOverlayHotkey()
+    private bool TryParseHotkey(string value, out uint modifiers, out uint virtualKey)
+    {
+        modifiers = MOD_NOREPEAT;
+        virtualKey = 0;
+        var parts = value.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length == 0) return false;
+
+        foreach (var part in parts[..^1])
+        {
+            switch (part.ToLowerInvariant())
+            {
+                case "ctrl": case "control": modifiers |= MOD_CONTROL; break;
+                case "alt": modifiers |= MOD_ALT; break;
+                case "shift": modifiers |= MOD_SHIFT; break;
+                case "win": case "windows": modifiers |= MOD_WIN; break;
+                default: return false;
+            }
+        }
+
+        if (!Enum.TryParse<Key>(parts[^1], true, out var key) || key is Key.None or Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin)
+            return false;
+        virtualKey = (uint)KeyInterop.VirtualKeyFromKey(key);
+        return virtualKey != 0;
+    }
+
+    private bool RegisterOverlayHotkey()
     {
         var hwnd = new WindowInteropHelper(this).Handle;
-        _hotkeySource = HwndSource.FromHwnd(hwnd);
+        _hotkeySource ??= HwndSource.FromHwnd(hwnd);
         _hotkeySource?.AddHook(HotkeyWndProc);
-        if (!RegisterHotKey(hwnd, HotkeyId, MOD_NOREPEAT, 0x77))
-            StatusText.Text = "F8 kısayolu kullanılamıyor; başka bir uygulama tarafından kullanılıyor olabilir.";
+        if (!TryParseHotkey(_overlayHotkey, out var modifiers, out var virtualKey))
+            return false;
+        return RegisterHotKey(hwnd, HotkeyId, modifiers, virtualKey);
+    }
+
+    private void HotkeyBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin)
+        {
+            e.Handled = true;
+            return;
+        }
+        if (key == Key.Escape)
+        {
+            HotkeyBox.Text = _overlayHotkey;
+            e.Handled = true;
+            return;
+        }
+
+        var parts = new List<string>();
+        if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) parts.Add("Ctrl");
+        if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0) parts.Add("Alt");
+        if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) parts.Add("Shift");
+        if ((Keyboard.Modifiers & ModifierKeys.Windows) != 0) parts.Add("Win");
+        parts.Add(key.ToString());
+        HotkeyBox.Text = string.Join("+", parts);
+        e.Handled = true;
+    }
+
+    private void ApplyHotkey_Click(object sender, RoutedEventArgs e)
+    {
+        var candidate = HotkeyBox.Text.Trim();
+        if (!TryParseHotkey(candidate, out _, out _))
+        {
+            StatusText.Text = "Geçerli bir klavye tuşu seç.";
+            return;
+        }
+
+        var hwnd = new WindowInteropHelper(this).Handle;
+        UnregisterHotKey(hwnd, HotkeyId);
+        var previous = _overlayHotkey;
+        _overlayHotkey = candidate;
+        if (!RegisterOverlayHotkey())
+        {
+            _overlayHotkey = previous;
+            RegisterOverlayHotkey();
+            HotkeyBox.Text = previous;
+            StatusText.Text = "Bu kısayol kullanılamıyor; başka bir uygulama tarafından kullanılıyor olabilir.";
+            return;
+        }
+        StatusText.Text = $"Overlay kısayolu {_overlayHotkey} olarak ayarlandı. Kalıcı olması için ayarları kaydet.";
+    }
+
+    private void ResetHotkey_Click(object sender, RoutedEventArgs e)
+    {
+        HotkeyBox.Text = "F8";
+        ApplyHotkey_Click(sender, e);
     }
 
     private IntPtr HotkeyWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -188,6 +274,8 @@ try {{
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
             _preset = s.Preset;
+            _overlayHotkey = string.IsNullOrWhiteSpace(s.Hotkey) ? "F8" : s.Hotkey;
+            if (HotkeyBox is not null) HotkeyBox.Text = _overlayHotkey;
             OffsetXSlider.Value = Math.Clamp(s.OffsetX, OffsetXSlider.Minimum, OffsetXSlider.Maximum);
             OffsetYSlider.Value = Math.Clamp(s.OffsetY, OffsetYSlider.Minimum, OffsetYSlider.Maximum);
             OverlayCheck.IsChecked = s.Overlay;
@@ -348,6 +436,14 @@ try {{
             OffsetXSlider.Value = Math.Clamp(s.OffsetX, OffsetXSlider.Minimum, OffsetXSlider.Maximum);
             OffsetYSlider.Value = Math.Clamp(s.OffsetY, OffsetYSlider.Minimum, OffsetYSlider.Maximum);
             OverlayCheck.IsChecked = s.Overlay;
+            if (!string.IsNullOrWhiteSpace(s.Hotkey))
+            {
+                _overlayHotkey = s.Hotkey;
+                HotkeyBox.Text = _overlayHotkey;
+                var hwnd = new WindowInteropHelper(this).Handle;
+                UnregisterHotKey(hwnd, HotkeyId);
+                if (!RegisterOverlayHotkey()) StatusText.Text = "Kayıtlı kısayol kullanılamıyor; yeni bir tuş seç.";
+            }
             DrawPreview();
             StatusText.Text = $"'{name}' profili yüklendi.";
         }
@@ -443,9 +539,9 @@ try {{
     {
         try
         {
-            var s = new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
+            var s = CaptureSettings() with { Hotkey = _overlayHotkey };
             System.IO.File.WriteAllText(System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-settings.json"), JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
-            StatusText.Text = "Ayarlar ve crosshair konumu kaydedildi.";
+            StatusText.Text = $"Ayarlar, konum ve {_overlayHotkey} kısayolu kaydedildi.";
         }
         catch (Exception ex) { StatusText.Text = "Kaydetme hatası: " + ex.Message; }
     }
