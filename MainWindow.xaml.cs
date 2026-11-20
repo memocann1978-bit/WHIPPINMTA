@@ -17,6 +17,7 @@ namespace WHIPPINMTA;
 public partial class MainWindow : Window
 {
     private string _color = "#FFFF4242";
+    private string _outlineColor = "#FF000000";
     private string _preset = "classic";
     private OverlayWindow? _overlay;
     private bool _dragging;
@@ -28,7 +29,7 @@ public partial class MainWindow : Window
     private const int WM_HOTKEY = 0x0312;
     private const uint MOD_NOREPEAT = 0x4000;
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2);
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000");
 
     public MainWindow()
     {
@@ -181,6 +182,7 @@ try {{
             ThicknessSlider.Value = Math.Clamp(s.Thickness, ThicknessSlider.Minimum, ThicknessSlider.Maximum);
             GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
             _color = s.Color;
+            _outlineColor = s.OutlineColor;
             if (OpacitySlider is not null) OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -204,6 +206,7 @@ try {{
     }
 
     private void Color_Click(object sender, RoutedEventArgs e) { _color = (string)((Button)sender).Tag; DrawPreview(); }
+    private void OutlineColor_Click(object sender, RoutedEventArgs e) { _outlineColor = (string)((Button)sender).Tag; DrawPreview(); }
     private void Setting_Changed(object sender, RoutedPropertyChangedEventArgs<double> e) { if (IsLoaded) DrawPreview(); }
     private void SettingToggle_Changed(object sender, RoutedEventArgs e) { if (IsLoaded) DrawPreview(); }
     private void Position_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -244,13 +247,14 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
         UpdateOverlay();
     }
 
-    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2)
+    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000")
     {
         var brush = (Brush)new BrushConverter().ConvertFromString(color)!;
+        var outlineBrush = (Brush)new BrushConverter().ConvertFromString(outlineColor)!;
         double outer = Math.Max(0, outlineThickness) * 2;
         void DrawLine(double x1, double y1, double x2, double y2, Brush stroke, double strokeWidth)
         {
@@ -259,7 +263,7 @@ try {{
         }
         void Line(double x1, double y1, double x2, double y2)
         {
-            if (outlineEnabled && outer > 0) DrawLine(x1, y1, x2, y2, Brushes.Black, thick + outer);
+            if (outlineEnabled && outer > 0) DrawLine(x1, y1, x2, y2, outlineBrush, thick + outer);
             DrawLine(x1, y1, x2, y2, brush, thick);
         }
         void EllipseShape(double left, double top, double width, double height, bool filled)
@@ -267,8 +271,8 @@ try {{
             if (outlineEnabled && outer > 0)
             {
                 var back = new Ellipse { Width = filled ? width + outer : width, Height = filled ? height + outer : height, Opacity = opacity };
-                if (filled) back.Fill = Brushes.Black;
-                else { back.Stroke = Brushes.Black; back.StrokeThickness = thick + outer; }
+                if (filled) back.Fill = outlineBrush;
+                else { back.Stroke = outlineBrush; back.StrokeThickness = thick + outer; }
                 Canvas.SetLeft(back, filled ? left - outer / 2 : left); Canvas.SetTop(back, filled ? top - outer / 2 : top); c.Children.Add(back);
             }
             var shape = new Ellipse { Width = width, Height = height, Opacity = opacity };
@@ -290,7 +294,7 @@ try {{
         if (OverlayCheck.IsChecked == true) { _overlay ??= new OverlayWindow(); _overlay.Show(); UpdateOverlay(); }
         else { _overlay?.Close(); _overlay = null; }
     }
-    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value);
+    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
@@ -346,9 +350,9 @@ public sealed class OverlayWindow : Window
         };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
-    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2)
+    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000")
     {
         _canvas.Children.Clear();
-        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness);
+        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor);
     }
 }
