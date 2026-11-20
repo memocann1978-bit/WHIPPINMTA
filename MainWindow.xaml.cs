@@ -25,6 +25,10 @@ public partial class MainWindow : Window
     private static readonly HttpClient UpdateHttp = new();
     private UpdateManifest? _availableUpdate;
     private bool _checkingUpdate;
+    private readonly System.Windows.Threading.DispatcherTimer _rainbowTimer = new() { Interval = TimeSpan.FromMilliseconds(350) };
+    private int _rainbowIndex;
+    private static readonly string[] RainbowColors = { "#FFFF334D", "#FFFF9F43", "#FFFFFF4D", "#FF43E879", "#FF43D5FF", "#FF617BFF", "#FFD66BFF" };
+    private string ActiveCrosshairColor => RainbowCheck?.IsChecked == true ? RainbowColors[_rainbowIndex] : _color;
     private HwndSource? _hotkeySource;
     private const int HotkeyId = 1978;
     private const int WM_HOTKEY = 0x0312;
@@ -35,11 +39,12 @@ public partial class MainWindow : Window
     private const uint MOD_NOREPEAT = 0x4000;
     private string _overlayHotkey = "F8";
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18, bool CenterDot = false, double CenterDotSize = 3, double Rotation = 0, bool ShowLeft = true, bool ShowRight = true, bool ShowTop = true, bool ShowBottom = true, bool GlowEnabled = false, double GlowStrength = 12, bool CenterRing = false, double CenterRingSize = 16);
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18, bool CenterDot = false, double CenterDotSize = 3, double Rotation = 0, bool ShowLeft = true, bool ShowRight = true, bool ShowTop = true, bool ShowBottom = true, bool GlowEnabled = false, double GlowStrength = 12, bool CenterRing = false, double CenterRingSize = 16, bool RainbowEnabled = false, double RainbowSpeed = 350);
 
     public MainWindow()
     {
         InitializeComponent();
+        _rainbowTimer.Tick += (_, _) => { _rainbowIndex = (_rainbowIndex + 1) % RainbowColors.Length; DrawPreview(); };
         NavigateTo(0);
         LoadSettings();
         DrawPreview();
@@ -47,6 +52,7 @@ public partial class MainWindow : Window
         Loaded += async (_, _) =>
         {
             RegisterOverlayHotkey();
+            if (RainbowCheck.IsChecked == true) Rainbow_Changed(this, new RoutedEventArgs());
             await CheckForUpdatesAsync(false);
         };
     }
@@ -302,6 +308,7 @@ try {{
             CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
             ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
             GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
+            RainbowCheck.IsChecked = s.RainbowEnabled; RainbowSpeedSlider.Value = Math.Clamp(s.RainbowSpeed, 80, 1200);
             _color = s.Color;
             _outlineColor = s.OutlineColor;
             if (CustomColorBox is not null) CustomColorBox.Text = _color;
@@ -377,6 +384,8 @@ try {{
     private void Setting_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (!IsLoaded) return;
+        if (ReferenceEquals(sender, RainbowSpeedSlider) && _rainbowTimer.IsEnabled)
+            _rainbowTimer.Interval = TimeSpan.FromMilliseconds(Math.Clamp(RainbowSpeedSlider.Value, 80, 1200));
         if (ReferenceEquals(sender, SizeSlider))
         {
             LeftLengthSlider.Value = RightLengthSlider.Value = TopLengthSlider.Value = BottomLengthSlider.Value = SizeSlider.Value;
@@ -392,6 +401,22 @@ try {{
         StatusText.Text = "Dört kol eşit uzunluğa getirildi.";
     }
     private void SettingToggle_Changed(object sender, RoutedEventArgs e) { if (IsLoaded) DrawPreview(); }
+    private void Rainbow_Changed(object sender, RoutedEventArgs e)
+    {
+        if (!IsLoaded) return;
+        if (RainbowCheck.IsChecked == true)
+        {
+            _rainbowTimer.Interval = TimeSpan.FromMilliseconds(Math.Clamp(RainbowSpeedSlider.Value, 80, 1200));
+            _rainbowTimer.Start();
+            StatusText.Text = "Rainbow renk döngüsü etkin.";
+        }
+        else
+        {
+            _rainbowTimer.Stop();
+            StatusText.Text = "Rainbow renk döngüsü kapatıldı.";
+        }
+        DrawPreview();
+    }
     private void Position_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (!IsLoaded) return;
@@ -430,7 +455,7 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, RainbowCheck.IsChecked == true, RainbowSpeedSlider.Value);
         UpdateOverlay();
     }
 
@@ -534,7 +559,7 @@ try {{
         if (OverlayCheck.IsChecked == true) { _overlay ??= new OverlayWindow(); _overlay.Show(); UpdateOverlay(); }
         else { _overlay?.Close(); _overlay = null; }
     }
-    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
+    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
@@ -587,6 +612,7 @@ try {{
             CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
             ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
             GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
+            RainbowCheck.IsChecked = s.RainbowEnabled; RainbowSpeedSlider.Value = Math.Clamp(s.RainbowSpeed, 80, 1200);
             OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -604,6 +630,7 @@ try {{
                 UnregisterHotKey(hwnd, HotkeyId);
                 if (!RegisterOverlayHotkey()) StatusText.Text = "Kayıtlı kısayol kullanılamıyor; yeni bir tuş seç.";
             }
+            Rainbow_Changed(this, new RoutedEventArgs());
             DrawPreview();
             StatusText.Text = $"'{name}' profili yüklendi.";
         }
@@ -769,6 +796,7 @@ try {{
         var hwnd = new WindowInteropHelper(this).Handle;
         UnregisterHotKey(hwnd, HotkeyId);
         _hotkeySource?.RemoveHook(HotkeyWndProc);
+        _rainbowTimer.Stop();
         _overlay?.Close();
         base.OnClosed(e);
     }
