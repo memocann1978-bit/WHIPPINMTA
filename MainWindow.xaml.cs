@@ -6,6 +6,10 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace WHIPPINMTA;
 
@@ -15,6 +19,10 @@ public partial class MainWindow : Window
     private string _preset = "classic";
     private OverlayWindow? _overlay;
     private bool _dragging;
+    private static readonly HttpClient UpdateHttp = new();
+    private UpdateManifest? _availableUpdate;
+    private bool _checkingUpdate;
+    private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
     private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0);
 
     public MainWindow()
@@ -22,6 +30,109 @@ public partial class MainWindow : Window
         InitializeComponent();
         LoadSettings();
         DrawPreview();
+        Loaded += async (_, _) => await CheckForUpdatesAsync(false);
+    }
+
+
+    private async void CheckUpdate_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(true);
+
+    private async Task CheckForUpdatesAsync(bool manual)
+    {
+        if (_checkingUpdate) return;
+        _checkingUpdate = true;
+        CheckUpdateButton.IsEnabled = false;
+        if (manual) UpdateStatusText.Text = "Güncellemeler kontrol ediliyor...";
+        try
+        {
+            UpdateHttp.DefaultRequestHeaders.UserAgent.ParseAdd("WHIPPINMTA-Updater/1.0");
+            var manifestUrl = "https://github.com/memocann1978-bit/WHIPPINMTA/releases/download/latest/latest.json";
+            var json = await UpdateHttp.GetStringAsync(manifestUrl);
+            var manifest = JsonSerializer.Deserialize<UpdateManifest>(json);
+            if (manifest is null || !Version.TryParse(manifest.Version, out var latest))
+                throw new InvalidDataException("Güncelleme bilgisi geçersiz.");
+            var current = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0, 0);
+            if (latest > current)
+            {
+                _availableUpdate = manifest;
+                InstallUpdateButton.Visibility = Visibility.Visible;
+                UpdateStatusText.Text = $"Yeni sürüm bulundu: v{manifest.Version}";
+            }
+            else
+            {
+                _availableUpdate = null;
+                InstallUpdateButton.Visibility = Visibility.Collapsed;
+                UpdateStatusText.Text = manual ? "WHIPPINMTA güncel." : "Uygulama güncel.";
+            }
+        }
+        catch
+        {
+            UpdateStatusText.Text = manual ? "Güncelleme kontrol edilemedi. İnternet bağlantını kontrol et." : "Güncelleme kontrolü yapılamadı.";
+        }
+        finally
+        {
+            _checkingUpdate = false;
+            CheckUpdateButton.IsEnabled = true;
+        }
+    }
+
+    private async void InstallUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        if (_availableUpdate is null) return;
+        InstallUpdateButton.IsEnabled = false;
+        UpdateStatusText.Text = "Güncelleme indiriliyor...";
+        string? downloaded = null;
+        try
+        {
+            var currentExe = Environment.ProcessPath;
+            if (string.IsNullOrWhiteSpace(currentExe) || !System.IO.File.Exists(currentExe))
+                throw new InvalidOperationException("Çalışan EXE yolu bulunamadı.");
+            downloaded = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"WHIPPINMTA-{Guid.NewGuid():N}.exe");
+            using var response = await UpdateHttp.GetAsync(_availableUpdate.DownloadUrl, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            await using (var fs = new System.IO.FileStream(downloaded, System.IO.FileMode.CreateNew, System.IO.FileAccess.Write, System.IO.FileShare.None))
+                await response.Content.CopyToAsync(fs);
+
+            await using var verifyStream = System.IO.File.OpenRead(downloaded);
+            var hash = Convert.ToHexString(await SHA256.HashDataAsync(verifyStream)).ToLowerInvariant();
+            if (!CryptographicOperations.FixedTimeEquals(
+                System.Text.Encoding.ASCII.GetBytes(hash),
+                System.Text.Encoding.ASCII.GetBytes(_availableUpdate.Sha256.ToLowerInvariant())))
+                throw new InvalidDataException("İndirilen dosyanın SHA-256 doğrulaması başarısız.");
+
+            static string PsQuote(string value) => "'" + value.Replace("'", "''") + "'";
+            var scriptPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"whippin-update-{Guid.NewGuid():N}.ps1");
+            var pid = Environment.ProcessId;
+            var script = $@"$ErrorActionPreference = 'Stop'
+$target = {PsQuote(currentExe)}
+$source = {PsQuote(downloaded)}
+$processId = {pid}
+$log = Join-Path $env:TEMP 'WHIPPINMTA-update.log'
+try {{
+  while (Get-Process -Id $processId -ErrorAction SilentlyContinue) {{ Start-Sleep -Milliseconds 500 }}
+  Copy-Item -LiteralPath $source -Destination $target -Force
+  Start-Process -FilePath $target
+  Remove-Item -LiteralPath $source -Force -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $PSCommandPath -Force -ErrorAction SilentlyContinue
+}} catch {{
+  $_ | Out-String | Set-Content -LiteralPath $log
+}}";
+            await System.IO.File.WriteAllTextAsync(scriptPath, script);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"{scriptPath}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+            UpdateStatusText.Text = "Güncelleme uygulanıyor, uygulama yeniden açılacak...";
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            if (downloaded is not null) try { System.IO.File.Delete(downloaded); } catch { }
+            UpdateStatusText.Text = "Güncelleme başarısız: " + ex.Message;
+            InstallUpdateButton.IsEnabled = true;
+        }
     }
 
     private void LoadSettings()
