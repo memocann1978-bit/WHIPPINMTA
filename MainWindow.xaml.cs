@@ -36,6 +36,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         LoadSettings();
         DrawPreview();
+        RefreshProfiles();
         Loaded += async (_, _) =>
         {
             RegisterOverlayHotkey();
