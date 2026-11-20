@@ -765,4 +765,18 @@ public sealed class OverlayWindow : Window
         _canvas.Children.Clear();
         MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength, centerDot, centerDotSize, rotation, showLeft, showRight, showTop, showBottom);
     }
+
+    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left && e.ButtonState == MouseButtonState.Pressed)
+        {
+            if (WindowState == WindowState.Maximized) return;
+            DragMove();
+        }
+    }
+
+    private void MinimizeWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    private void MaximizeWindow_Click(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    private void CloseWindow_Click(object sender, RoutedEventArgs e) => Close();
 }
