@@ -296,6 +296,63 @@ try {{
     }
     private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
 
+    private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
+
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
+
+    private void RefreshProfiles(string? selectName = null)
+    {
+        try
+        {
+            Dictionary<string, Settings> profiles = System.IO.File.Exists(ProfilesPath)
+                ? JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new()
+                : new();
+            ProfileCombo.ItemsSource = profiles.Keys.OrderBy(k => k).ToList();
+            if (!string.IsNullOrWhiteSpace(selectName)) ProfileCombo.SelectedItem = selectName;
+        }
+        catch { StatusText.Text = "Profil listesi okunamadı."; }
+    }
+
+    private void SaveProfile_Click(object sender, RoutedEventArgs e)
+    {
+        var name = ProfileNameBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(name)) { StatusText.Text = "Önce profil adı yaz."; return; }
+        try
+        {
+            Dictionary<string, Settings> profiles = System.IO.File.Exists(ProfilesPath)
+                ? JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new()
+                : new();
+            profiles[name] = CaptureSettings();
+            System.IO.File.WriteAllText(ProfilesPath, JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true }));
+            RefreshProfiles(name);
+            StatusText.Text = $"'{name}' profili kaydedildi.";
+        }
+        catch (Exception ex) { StatusText.Text = "Profil kaydedilemedi: " + ex.Message; }
+    }
+
+    private void LoadProfile_Click(object sender, RoutedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem is not string name) { StatusText.Text = "Yüklenecek bir profil seç."; return; }
+        try
+        {
+            var profiles = JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new();
+            if (!profiles.TryGetValue(name, out var s)) { StatusText.Text = "Profil bulunamadı."; RefreshProfiles(); return; }
+            SizeSlider.Value = Math.Clamp(s.Size, SizeSlider.Minimum, SizeSlider.Maximum);
+            ThicknessSlider.Value = Math.Clamp(s.Thickness, ThicknessSlider.Minimum, ThicknessSlider.Maximum);
+            GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
+            OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
+            OutlineCheck.IsChecked = s.OutlineEnabled;
+            OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
+            _color = s.Color; _outlineColor = s.OutlineColor; _preset = s.Preset;
+            OffsetXSlider.Value = Math.Clamp(s.OffsetX, OffsetXSlider.Minimum, OffsetXSlider.Maximum);
+            OffsetYSlider.Value = Math.Clamp(s.OffsetY, OffsetYSlider.Minimum, OffsetYSlider.Maximum);
+            OverlayCheck.IsChecked = s.Overlay;
+            DrawPreview();
+            StatusText.Text = $"'{name}' profili yüklendi.";
+        }
+        catch (Exception ex) { StatusText.Text = "Profil yüklenemedi: " + ex.Message; }
+    }
+
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         try
