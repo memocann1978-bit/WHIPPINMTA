@@ -22,6 +22,7 @@
      <TextBlock Text="Boyut" Foreground="#FFB8BAC4"/><Slider x:Name="SizeSlider" Minimum="4" Maximum="40" Value="18" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Çizgi kalınlığı" Foreground="#FFB8BAC4"/><Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Merkez boşluğu" Foreground="#FFB8BAC4"/><Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="5" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
+     <TextBlock Text="Saydamlık / Opaklık" Foreground="#FFB8BAC4"/><Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Value="1" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Renk" Foreground="#FFB8BAC4" Margin="0,0,0,8"/>
      <UniformGrid Columns="5">
       <Button Background="#FFFF4242" Tag="#FFFF4242" Click="Color_Click" Height="28" Margin="2"/>
