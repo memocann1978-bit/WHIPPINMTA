@@ -455,7 +455,7 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, RainbowCheck.IsChecked == true, RainbowSpeedSlider.Value);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
         UpdateOverlay();
     }
 
