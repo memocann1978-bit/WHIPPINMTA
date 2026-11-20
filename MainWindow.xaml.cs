@@ -563,7 +563,7 @@ try {{
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
-    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, RainbowCheck.IsChecked == true, RainbowSpeedSlider.Value);
 
     private void RefreshProfiles(string? selectName = null)
     {
