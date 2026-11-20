@@ -28,7 +28,7 @@ public partial class MainWindow : Window
     private const int WM_HOTKEY = 0x0312;
     private const uint MOD_NOREPEAT = 0x4000;
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0);
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1);
 
     public MainWindow()
     {
@@ -181,6 +181,7 @@ try {{
             ThicknessSlider.Value = Math.Clamp(s.Thickness, ThicknessSlider.Minimum, ThicknessSlider.Maximum);
             GapSlider.Value = Math.Clamp(s.Gap, GapSlider.Minimum, GapSlider.Maximum);
             _color = s.Color;
+            if (OpacitySlider is not null) OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             _preset = s.Preset;
             OffsetXSlider.Value = Math.Clamp(s.OffsetX, OffsetXSlider.Minimum, OffsetXSlider.Maximum);
             OffsetYSlider.Value = Math.Clamp(s.OffsetY, OffsetYSlider.Minimum, OffsetYSlider.Maximum);
@@ -240,26 +241,26 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OpacitySlider.Value);
         UpdateOverlay();
     }
 
-    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset)
+    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1)
     {
         var brush = (Brush)new BrushConverter().ConvertFromString(color)!;
         void Line(double x1, double y1, double x2, double y2)
         {
-            var l = new Line { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, Stroke = brush, StrokeThickness = thick, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
+            var l = new Line { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, Stroke = brush, Opacity = opacity, StrokeThickness = thick, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
             c.Children.Add(l);
         }
         if (preset == "circle")
         {
-            var el = new Ellipse { Width = size, Height = size, Stroke = brush, StrokeThickness = thick };
+            var el = new Ellipse { Width = size, Height = size, Stroke = brush, Opacity = opacity, StrokeThickness = thick };
             Canvas.SetLeft(el, x - size / 2); Canvas.SetTop(el, y - size / 2); c.Children.Add(el);
         }
         else if (preset == "dot")
         {
-            var el = new Ellipse { Width = size / 3, Height = size / 3, Fill = brush };
+            var el = new Ellipse { Width = size / 3, Height = size / 3, Fill = brush, Opacity = opacity };
             Canvas.SetLeft(el, x - size / 6); Canvas.SetTop(el, y - size / 6); c.Children.Add(el);
         }
         else
@@ -275,13 +276,13 @@ try {{
         if (OverlayCheck.IsChecked == true) { _overlay ??= new OverlayWindow(); _overlay.Show(); UpdateOverlay(); }
         else { _overlay?.Close(); _overlay = null; }
     }
-    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value);
+    private void UpdateOverlay() => _overlay?.UpdateCross(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value);
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            var s = new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value);
+            var s = new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value);
             System.IO.File.WriteAllText(System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-settings.json"), JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
             StatusText.Text = "Ayarlar ve crosshair konumu kaydedildi.";
         }
@@ -331,9 +332,9 @@ public sealed class OverlayWindow : Window
         };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
-    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY)
+    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1)
     {
         _canvas.Children.Clear();
-        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset);
+        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity);
     }
 }
