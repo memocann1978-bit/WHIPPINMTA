@@ -4,6 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace WHIPPINMTA;
 
@@ -147,12 +149,33 @@ public partial class MainWindow : Window
 public sealed class OverlayWindow : Window
 {
     private readonly Canvas _canvas = new();
+
+    private const int GWL_EXSTYLE = -20;
+    private const int WS_EX_TRANSPARENT = 0x00000020;
+    private const int WS_EX_TOOLWINDOW = 0x00000080;
+    private const int WS_EX_LAYERED = 0x00080000;
+    private const int WS_EX_NOACTIVATE = 0x08000000;
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
+    private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+    private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+    protected override bool ShowActivated => false;
     public OverlayWindow()
     {
         WindowStyle = WindowStyle.None; AllowsTransparency = true; Background = Brushes.Transparent;
         Topmost = true; ShowInTaskbar = false; Width = SystemParameters.PrimaryScreenWidth;
         Height = SystemParameters.PrimaryScreenHeight; Left = 0; Top = 0;
         IsHitTestVisible = false; Content = _canvas;
+        SourceInitialized += (s, e) =>
+        {
+            var hwnd = new WindowInteropHelper(this).Handle;
+            long style = GetWindowLongPtr(hwnd, GWL_EXSTYLE).ToInt64();
+            style |= WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_LAYERED | WS_EX_NOACTIVATE;
+            SetWindowLongPtr(hwnd, GWL_EXSTYLE, new IntPtr(style));
+        };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
     public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY)
