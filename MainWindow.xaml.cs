@@ -387,7 +387,7 @@ try {{
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
-    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey);
 
     private void RefreshProfiles(string? selectName = null)
     {
