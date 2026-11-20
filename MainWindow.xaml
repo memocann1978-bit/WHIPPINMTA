@@ -196,6 +196,11 @@
         <CheckBox x:Name="CenterRingCheck" Content="Merkez halkasını göster" Click="SettingToggle_Changed"/>
         <TextBlock Text="Merkez halka çapı" FontSize="9"/><Slider x:Name="CenterRingSizeSlider" Minimum="4" Maximum="60" Value="16" ValueChanged="Setting_Changed"/>
         <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
+        <TextBlock Text="DIŞ HEDEF HALKASI" Style="{StaticResource FieldLabel}"/>
+        <CheckBox x:Name="OuterRingCheck" Content="Büyük dış halkayı göster" Click="SettingToggle_Changed"/>
+        <TextBlock Text="Dış halka çapı" FontSize="9"/><Slider x:Name="OuterRingSizeSlider" Minimum="20" Maximum="180" Value="64" ValueChanged="Setting_Changed"/>
+        <TextBlock Text="Dış halka kalınlığı" FontSize="9"/><Slider x:Name="OuterRingThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed"/>
+        <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
         <TextBlock Text="RENK ANİMASYONU" Style="{StaticResource FieldLabel}"/>
         <CheckBox x:Name="RainbowCheck" Content="Rainbow renk döngüsünü etkinleştir" Click="Rainbow_Changed"/>
         <TextBlock Text="Renk geçiş hızı" FontSize="9"/><Slider x:Name="RainbowSpeedSlider" Minimum="80" Maximum="1200" Value="350" ValueChanged="Setting_Changed"/>
