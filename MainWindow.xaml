@@ -8,7 +8,7 @@
   <Grid Grid.Row="1">
    <Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.4*"/></Grid.ColumnDefinitions>
    <Border Background="#FF17191F" CornerRadius="16" Padding="20" Margin="0,0,12,0">
-    <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
      <TextBlock Text="CURSOR STUDIO" FontSize="13" FontWeight="Bold" Foreground="#FFE86A6A" Margin="0,0,0,18"/>
      <TextBlock Text="Hazır tasarımlar" Foreground="#FFB8BAC4" Margin="0,0,0,8"/>
      <UniformGrid Columns="3" Rows="2" Margin="0,0,0,20">
@@ -23,6 +23,8 @@
      <TextBlock Text="Çizgi kalınlığı" Foreground="#FFB8BAC4"/><Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Merkez boşluğu" Foreground="#FFB8BAC4"/><Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="5" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Saydamlık / Opaklık" Foreground="#FFB8BAC4"/><Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Value="1" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
+     <CheckBox x:Name="OutlineCheck" Content="Dış çizgiyi etkinleştir" IsChecked="True" Foreground="#FFE5E5E8" Click="SettingToggle_Changed" Margin="0,0,0,6"/>
+     <TextBlock Text="Dış çizgi kalınlığı" Foreground="#FFB8BAC4"/><Slider x:Name="OutlineThicknessSlider" Minimum="1" Maximum="8" Value="2" ValueChanged="Setting_Changed" Margin="0,4,0,14"/>
      <TextBlock Text="Renk" Foreground="#FFB8BAC4" Margin="0,0,0,8"/>
      <UniformGrid Columns="5">
       <Button Background="#FFFF4242" Tag="#FFFF4242" Click="Color_Click" Height="28" Margin="2"/>
@@ -31,7 +33,7 @@
       <Button Background="#FFFFFFFF" Tag="#FFFFFFFF" Click="Color_Click" Height="28" Margin="2"/>
       <Button Background="#FFFFFF00" Tag="#FFFFFF00" Click="Color_Click" Height="28" Margin="2"/>
      </UniformGrid>
-    </StackPanel>
+    </StackPanel></ScrollViewer>
    </Border>
    <Border Grid.Column="1" Background="#FF17191F" CornerRadius="16" Padding="20" Margin="12,0,0,0">
     <Grid>
