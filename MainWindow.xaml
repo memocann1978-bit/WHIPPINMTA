@@ -116,6 +116,20 @@
                         <Slider x:Name="ThicknessSlider" Minimum="1" Maximum="6" Value="2" ValueChanged="Setting_Changed"/>
                         <TextBlock Text="Merkez boşluğu" FontSize="12" FontWeight="SemiBold"/>
                         <Slider x:Name="GapSlider" Minimum="0" Maximum="18" Value="5" ValueChanged="Setting_Changed"/>
+                        <Border Background="#FF132139" CornerRadius="10" Padding="11" Margin="0,2,0,12">
+                            <StackPanel>
+                                <TextBlock Text="KOL UZUNLUKLARI" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966" Margin="0,0,0,9"/>
+                                <TextBlock Text="Sol kol" FontSize="11"/>
+                                <Slider x:Name="LeftLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+                                <TextBlock Text="Sağ kol" FontSize="11"/>
+                                <Slider x:Name="RightLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+                                <TextBlock Text="Üst kol" FontSize="11"/>
+                                <Slider x:Name="TopLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+                                <TextBlock Text="Alt kol" FontSize="11"/>
+                                <Slider x:Name="BottomLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
+                                <Button Content="KOLLARI EŞİTLE" Click="EqualizeArms_Click" Background="#FF1D2D48" Padding="8" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
                         <TextBlock Text="Opaklık" FontSize="12" FontWeight="SemiBold"/>
                         <Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Value="1" ValueChanged="Setting_Changed"/>
 
