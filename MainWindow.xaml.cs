@@ -64,6 +64,12 @@ public partial class MainWindow : Window
     }
 
 
+    private void OpenAimTrainer_Click(object sender, RoutedEventArgs e)
+    {
+        var trainer = new AimTrainerWindow { Owner = this };
+        trainer.Show();
+    }
+
     private void Navigation_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button button || !int.TryParse(button.Tag?.ToString(), out var index))
