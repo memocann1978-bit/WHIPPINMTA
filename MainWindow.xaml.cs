@@ -354,6 +354,91 @@ try {{
         catch (Exception ex) { StatusText.Text = "Profil yüklenemedi: " + ex.Message; }
     }
 
+    private void RenameProfile_Click(object sender, RoutedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem is not string oldName)
+        {
+            StatusText.Text = "Yeniden adlandırmak için bir profil seç.";
+            return;
+        }
+
+        var newName = ProfileNameBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(newName))
+        {
+            StatusText.Text = "Yeni profil adını yaz.";
+            return;
+        }
+        if (string.Equals(oldName, newName, StringComparison.Ordinal))
+        {
+            StatusText.Text = "Profil adı zaten aynı.";
+            return;
+        }
+
+        try
+        {
+            var profiles = System.IO.File.Exists(ProfilesPath)
+                ? JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new()
+                : new();
+            if (!profiles.ContainsKey(oldName))
+            {
+                StatusText.Text = "Seçili profil bulunamadı.";
+                RefreshProfiles();
+                return;
+            }
+            if (profiles.ContainsKey(newName))
+            {
+                StatusText.Text = "Bu isimde bir profil zaten var.";
+                return;
+            }
+
+            profiles[newName] = profiles[oldName];
+            profiles.Remove(oldName);
+            System.IO.File.WriteAllText(ProfilesPath, JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true }));
+            RefreshProfiles(newName);
+            StatusText.Text = $"'{oldName}' profili '{newName}' olarak yeniden adlandırıldı.";
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = "Profil yeniden adlandırılamadı: " + ex.Message;
+        }
+    }
+
+    private void DeleteProfile_Click(object sender, RoutedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem is not string name)
+        {
+            StatusText.Text = "Silmek için bir profil seç.";
+            return;
+        }
+
+        var answer = MessageBox.Show(
+            $"'{name}' profili kalıcı olarak silinsin mi?",
+            "WHIPPINMTA — Profil sil",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning,
+            MessageBoxResult.No);
+        if (answer != MessageBoxResult.Yes) return;
+
+        try
+        {
+            var profiles = JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new();
+            if (!profiles.Remove(name))
+            {
+                StatusText.Text = "Profil bulunamadı.";
+                RefreshProfiles();
+                return;
+            }
+            System.IO.File.WriteAllText(ProfilesPath, JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true }));
+            ProfileNameBox.Text = name;
+            RefreshProfiles();
+            StatusText.Text = $"'{name}' profili silindi.";
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = "Profil silinemedi: " + ex.Message;
+        }
+    }
+
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         try
