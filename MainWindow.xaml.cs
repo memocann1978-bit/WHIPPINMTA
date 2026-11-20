@@ -40,6 +40,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        NavigateTo(0);
         LoadSettings();
         DrawPreview();
         RefreshProfiles();
@@ -50,6 +51,31 @@ public partial class MainWindow : Window
         };
     }
 
+
+    private void Navigation_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || !int.TryParse(button.Tag?.ToString(), out var index))
+            return;
+        NavigateTo(index);
+    }
+
+    private void NavigateTo(int index)
+    {
+        if (SettingsTabs is null) return;
+        SettingsTabs.SelectedIndex = Math.Clamp(index, 0, 6);
+        var buttons = new[] { NavHome, NavCrosshair, NavAdvanced, NavPosition, NavHotkeys, NavProfiles, NavAbout };
+        for (var i = 0; i < buttons.Length; i++)
+        {
+            var selected = i == SettingsTabs.SelectedIndex;
+            buttons[i].Background = selected
+                ? new SolidColorBrush(Color.FromRgb(133, 10, 23))
+                : Brushes.Transparent;
+            buttons[i].BorderBrush = selected
+                ? new SolidColorBrush(Color.FromRgb(255, 38, 56))
+                : Brushes.Transparent;
+            buttons[i].BorderThickness = selected ? new Thickness(1) : new Thickness(0);
+        }
+    }
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
