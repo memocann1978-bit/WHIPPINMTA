@@ -190,6 +190,10 @@
         <TextBlock Text="Parıltı yoğunluğu" FontSize="9"/><Slider x:Name="GlowStrengthSlider" Minimum="0" Maximum="30" Value="12" ValueChanged="Setting_Changed"/>
         <CheckBox x:Name="CenterRingCheck" Content="Merkez halkasını göster" Click="SettingToggle_Changed"/>
         <TextBlock Text="Merkez halka çapı" FontSize="9"/><Slider x:Name="CenterRingSizeSlider" Minimum="4" Maximum="60" Value="16" ValueChanged="Setting_Changed"/>
+        <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
+        <TextBlock Text="RENK ANİMASYONU" Style="{StaticResource FieldLabel}"/>
+        <CheckBox x:Name="RainbowCheck" Content="Rainbow renk döngüsünü etkinleştir" Click="Rainbow_Changed"/>
+        <TextBlock Text="Renk geçiş hızı" FontSize="9"/><Slider x:Name="RainbowSpeedSlider" Minimum="80" Maximum="1200" Value="350" ValueChanged="Setting_Changed"/>
        </StackPanel>
       </ScrollViewer>
      </TabItem>
