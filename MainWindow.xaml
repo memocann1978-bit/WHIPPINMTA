@@ -184,6 +184,12 @@
         <CheckBox x:Name="CenterDotCheck" Content="Merkez noktasını göster" Click="SettingToggle_Changed"/>
         <TextBlock Text="Merkez nokta boyutu" FontSize="9"/><Slider x:Name="CenterDotSizeSlider" Minimum="1" Maximum="12" Value="3" ValueChanged="Setting_Changed"/>
         <TextBlock Text="Döndürme açısı" FontSize="9"/><Slider x:Name="RotationSlider" Minimum="-180" Maximum="180" Value="0" ValueChanged="Setting_Changed"/>
+        <Border Height="1" Background="#FF252B39" Margin="0,8,0,15"/>
+        <TextBlock Text="GÖRSEL EFEKTLER" Style="{StaticResource FieldLabel}"/>
+        <CheckBox x:Name="GlowCheck" Content="Neon parıltı (Glow) efekti" Click="SettingToggle_Changed"/>
+        <TextBlock Text="Parıltı yoğunluğu" FontSize="9"/><Slider x:Name="GlowStrengthSlider" Minimum="0" Maximum="30" Value="12" ValueChanged="Setting_Changed"/>
+        <CheckBox x:Name="CenterRingCheck" Content="Merkez halkasını göster" Click="SettingToggle_Changed"/>
+        <TextBlock Text="Merkez halka çapı" FontSize="9"/><Slider x:Name="CenterRingSizeSlider" Minimum="4" Maximum="60" Value="16" ValueChanged="Setting_Changed"/>
        </StackPanel>
       </ScrollViewer>
      </TabItem>
