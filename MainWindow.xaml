@@ -140,6 +140,16 @@
                             <Button Background="#FF39E879" Tag="#FF39E879" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
                             <Button Background="#FF42B8FF" Tag="#FF42B8FF" Click="OutlineColor_Click" Height="30" Margin="2" Padding="0"/>
                         </UniformGrid>
+                        <Border Height="1" Background="#FF252D3B" Margin="0,8,0,17"/>
+                        <TextBlock Text="04  KISAYOL AYARLARI" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,12"/>
+                        <TextBlock Text="Overlay aç / kapat" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                        <TextBlock Text="Tuşu değiştirmek için aşağıdaki alana tıkla ve klavyeden yeni kombinasyonu bas." FontSize="10" Foreground="#FF8993A6" TextWrapping="Wrap" Margin="0,0,0,9"/>
+                        <TextBox x:Name="HotkeyBox" Text="F8" IsReadOnly="True" Focusable="True" PreviewKeyDown="HotkeyBox_PreviewKeyDown" FontSize="14" FontWeight="Bold" TextAlignment="Center" Padding="10" Margin="0,0,0,8" Cursor="Hand"/>
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="KISAYOLU UYGULA" Click="ApplyHotkey_Click" Background="#FF293449" Padding="7"/>
+                            <Button Grid.Column="2" Content="VARSAYILAN F8" Click="ResetHotkey_Click" Background="#FF293449" Padding="7"/>
+                        </Grid>
                     </StackPanel>
                 </ScrollViewer>
                 <StackPanel Grid.Row="2" Margin="22,12,22,20">
