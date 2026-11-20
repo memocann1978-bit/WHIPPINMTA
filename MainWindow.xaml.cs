@@ -23,6 +23,10 @@ public partial class MainWindow : Window
     private static readonly HttpClient UpdateHttp = new();
     private UpdateManifest? _availableUpdate;
     private bool _checkingUpdate;
+    private HwndSource? _hotkeySource;
+    private const int HotkeyId = 1978;
+    private const int WM_HOTKEY = 0x0312;
+    private const uint MOD_NOREPEAT = 0x4000;
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
     private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0);
 
@@ -31,9 +35,38 @@ public partial class MainWindow : Window
         InitializeComponent();
         LoadSettings();
         DrawPreview();
-        Loaded += async (_, _) => await CheckForUpdatesAsync(false);
+        Loaded += async (_, _) =>
+        {
+            RegisterOverlayHotkey();
+            await CheckForUpdatesAsync(false);
+        };
     }
 
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+    private void RegisterOverlayHotkey()
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        _hotkeySource = HwndSource.FromHwnd(hwnd);
+        _hotkeySource?.AddHook(HotkeyWndProc);
+        if (!RegisterHotKey(hwnd, HotkeyId, MOD_NOREPEAT, 0x77))
+            StatusText.Text = "F8 kısayolu kullanılamıyor; başka bir uygulama tarafından kullanılıyor olabilir.";
+    }
+
+    private IntPtr HotkeyWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    {
+        if (msg == WM_HOTKEY && wParam.ToInt32() == HotkeyId)
+        {
+            OverlayCheck.IsChecked = OverlayCheck.IsChecked != true;
+            handled = true;
+        }
+        return IntPtr.Zero;
+    }
 
     private async void CheckUpdate_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(true);
 
@@ -255,7 +288,14 @@ try {{
         catch (Exception ex) { StatusText.Text = "Kaydetme hatası: " + ex.Message; }
     }
 
-    protected override void OnClosed(EventArgs e) { _overlay?.Close(); base.OnClosed(e); }
+    protected override void OnClosed(EventArgs e)
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        UnregisterHotKey(hwnd, HotkeyId);
+        _hotkeySource?.RemoveHook(HotkeyWndProc);
+        _overlay?.Close();
+        base.OnClosed(e);
+    }
 }
 
 public sealed class OverlayWindow : Window
@@ -278,8 +318,9 @@ public sealed class OverlayWindow : Window
     {
         ShowActivated = false;
         WindowStyle = WindowStyle.None; AllowsTransparency = true; Background = Brushes.Transparent;
-        Topmost = true; ShowInTaskbar = false; Width = SystemParameters.PrimaryScreenWidth;
-        Height = SystemParameters.PrimaryScreenHeight; Left = 0; Top = 0;
+        Topmost = true; ShowInTaskbar = false; WindowStartupLocation = WindowStartupLocation.Manual;
+        Left = SystemParameters.VirtualScreenLeft; Top = SystemParameters.VirtualScreenTop;
+        Width = SystemParameters.VirtualScreenWidth; Height = SystemParameters.VirtualScreenHeight;
         IsHitTestVisible = false; Content = _canvas;
         SourceInitialized += (s, e) =>
         {
