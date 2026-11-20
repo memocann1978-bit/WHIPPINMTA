@@ -47,7 +47,7 @@ public partial class MainWindow : Window
             UpdateHttp.DefaultRequestHeaders.UserAgent.ParseAdd("WHIPPINMTA-Updater/1.0");
             var manifestUrl = "https://github.com/memocann1978-bit/WHIPPINMTA/releases/download/latest/latest.json";
             var json = await UpdateHttp.GetStringAsync(manifestUrl);
-            var manifest = JsonSerializer.Deserialize<UpdateManifest>(json);
+            var manifest = JsonSerializer.Deserialize<UpdateManifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (manifest is null || !Version.TryParse(manifest.Version, out var latest))
                 throw new InvalidDataException("Güncelleme bilgisi geçersiz.");
             var current = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0, 0);
