@@ -300,7 +300,7 @@ try {{
     {
         try
         {
-            var s = new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value);
+            var s = new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor);
             System.IO.File.WriteAllText(System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-settings.json"), JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
             StatusText.Text = "Ayarlar ve crosshair konumu kaydedildi.";
         }
