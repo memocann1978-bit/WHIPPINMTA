@@ -56,7 +56,7 @@
       <TextBlock Text="Aim. Control. Dominate." FontSize="8" Foreground="#FFFF3C4A" HorizontalAlignment="Center" Margin="0,3,0,0"/>
      </StackPanel>
      <StackPanel Grid.Row="1" Margin="0,4,0,0">
-      <Button Content="⌂   Ana Sayfa" Background="#FF850A17" BorderBrush="#FFFF1728" HorizontalContentAlignment="Left" Padding="13,10" Margin="0,0,5,5" CornerRadius="0"/>
+      <Button Content="⌂   Ana Sayfa" Background="#FF850A17" BorderBrush="#FFFF1728" HorizontalContentAlignment="Left" Padding="13,10" Margin="0,0,5,5"/>
       <Button Content="⌖   Crosshair" HorizontalContentAlignment="Left" Padding="13,9" Margin="0,0,5,2" Click="Preset_Click" Tag="classic" Background="Transparent" BorderThickness="0"/>
       <Button Content="♙   Profil Yönetimi" HorizontalContentAlignment="Left" Padding="13,9" Margin="0,0,5,2" Click="LoadProfile_Click" Background="Transparent" BorderThickness="0"/>
       <Button Content="▣   Kısayol Ayarları" HorizontalContentAlignment="Left" Padding="13,9" Margin="0,0,5,2" Click="ApplyHotkey_Click" Background="Transparent" BorderThickness="0"/>
@@ -181,7 +181,7 @@
       </Grid>
      </Border>
     </Grid>
-    <Grid Grid.Row="1" Margin="0,12,0,0">
+    <Grid Grid.Row="2" Margin="0,12,0,0">
      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
      <DockPanel Grid.Row="0" Margin="0,0,0,9">
       <TextBlock Text="KONUMU SIFIRLA" FontSize="9" Foreground="#FF929BAD" VerticalAlignment="Center"/>
@@ -199,15 +199,15 @@
       </Grid>
      </Border>
     </Grid>
-    <Border Grid.Row="1" Background="#FF0D1321" BorderBrush="#FF29202A" BorderThickness="1" CornerRadius="7" Padding="9" Margin="0,11,0,0">
+    <Border Grid.Row="2" Background="#FF0D1321" BorderBrush="#FF29202A" BorderThickness="1" CornerRadius="7" Padding="9" Margin="0,11,0,0">
      <Grid>
-      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <TextBlock Text="Profil Seçin" FontSize="9" Foreground="#FF929BAD" VerticalAlignment="Center" Margin="0,0,8,0"/>
       <ComboBox x:Name="ProfileCombo" Grid.Column="1" VerticalAlignment="Center" MinWidth="110"/>
       <Button Grid.Column="3" Content="＋" Click="SaveProfile_Click" ToolTip="Profil kaydet" Padding="10,6"/>
       <Button Grid.Column="5" Content="✎" Click="RenameProfile_Click" ToolTip="Profili yeniden adlandır" Padding="10,6"/>
       <Button Grid.Column="7" Content="▤" Click="DeleteProfile_Click" ToolTip="Profili sil" Padding="10,6"/>
-      <Button Grid.Column="8" Content="Kaydet" Click="Save_Click" Background="#FFB5091D" BorderBrush="#FFFF2638" Padding="16,8" Margin="8,0,0,0"/>
+      <Button Grid.Column="9" Content="Kaydet" Click="Save_Click" Background="#FFB5091D" BorderBrush="#FFFF2638" Padding="16,8" Margin="8,0,0,0"/>
      </Grid>
     </Border>
    </Grid>
