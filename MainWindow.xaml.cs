@@ -302,7 +302,6 @@ try {{
             CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
             ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
             GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
-            GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
             _color = s.Color;
             _outlineColor = s.OutlineColor;
             if (CustomColorBox is not null) CustomColorBox.Text = _color;
@@ -587,6 +586,7 @@ try {{
             BottomLengthSlider.Value = Math.Clamp(s.BottomLength, BottomLengthSlider.Minimum, BottomLengthSlider.Maximum);
             CenterDotCheck.IsChecked = s.CenterDot; CenterDotSizeSlider.Value = Math.Clamp(s.CenterDotSize, 1, 12); RotationSlider.Value = Math.Clamp(s.Rotation, -180, 180);
             ShowLeftCheck.IsChecked = s.ShowLeft; ShowRightCheck.IsChecked = s.ShowRight; ShowTopCheck.IsChecked = s.ShowTop; ShowBottomCheck.IsChecked = s.ShowBottom;
+            GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
             OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
