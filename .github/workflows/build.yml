@@ -1,25 +1,60 @@
-name: Build WHIPPINMTA
+name: Build and Release WHIPPINMTA
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install .NET 8 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Publish single-file Windows executable
-        run: dotnet publish WHIPPINMTA.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
-      - name: Upload executable
+        shell: pwsh
+        run: |
+          $version = "1.0.${{ github.run_number }}.0"
+          dotnet publish WHIPPINMTA.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true "-p:Version=$version" -o publish
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Create updater manifest
+        shell: pwsh
+        run: |
+          $version = "1.0.${{ github.run_number }}.0"
+          $hash = (Get-FileHash publish/WHIPPINMTA.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          $manifest = @{
+            version = $version
+            downloadUrl = "https://github.com/memocann1978-bit/WHIPPINMTA/releases/download/latest/WHIPPINMTA.exe"
+            sha256 = $hash
+          }
+          $manifest | ConvertTo-Json -Compress | Set-Content -Path publish/latest.json -Encoding utf8NoBOM
+
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: WHIPPINMTA-Windows-x64
           path: publish/WHIPPINMTA.exe
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish latest release for in-app updater
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          target_commitish: main
+          name: WHIPPINMTA Latest
+          body: "Latest automatically built Windows x64 version. The WHIPPINMTA app checks this release for updates."
+          files: |
+            publish/WHIPPINMTA.exe
+            publish/latest.json
+          overwrite_files: true
+          make_latest: true
+          fail_on_unmatched_files: true
