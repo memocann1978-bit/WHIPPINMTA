@@ -162,9 +162,9 @@ public sealed class OverlayWindow : Window
     [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
     private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
-    protected override bool ShowActivated => false;
     public OverlayWindow()
     {
+        ShowActivated = false;
         WindowStyle = WindowStyle.None; AllowsTransparency = true; Background = Brushes.Transparent;
         Topmost = true; ShowInTaskbar = false; Width = SystemParameters.PrimaryScreenWidth;
         Height = SystemParameters.PrimaryScreenHeight; Left = 0; Top = 0;
