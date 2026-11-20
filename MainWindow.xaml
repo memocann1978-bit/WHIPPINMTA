@@ -85,13 +85,19 @@
                     <StackPanel Margin="22,0,22,18">
                         <TextBlock Text="01  TASARIM" FontSize="10" FontWeight="Bold" Foreground="#FF8E9AAF" Margin="0,0,0,10"/>
                         <TextBlock Text="Hazır crosshair tasarımları" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,9"/>
-                        <UniformGrid Columns="3" Rows="2" Margin="0,0,0,21">
+                        <UniformGrid Columns="3" Rows="4" Margin="0,0,0,21">
                             <Button Content="Classic" Tag="classic" Click="Preset_Click" Margin="3"/>
                             <Button Content="Minimal" Tag="minimal" Click="Preset_Click" Margin="3"/>
                             <Button Content="Dot" Tag="dot" Click="Preset_Click" Margin="3"/>
                             <Button Content="Circle" Tag="circle" Click="Preset_Click" Margin="3"/>
                             <Button Content="Precision" Tag="precision" Click="Preset_Click" Margin="3"/>
                             <Button Content="Cross" Tag="cross" Click="Preset_Click" Margin="3"/>
+                            <Button Content="T-Shape" Tag="tshape" Click="Preset_Click" Margin="3"/>
+                            <Button Content="Chevron" Tag="chevron" Click="Preset_Click" Margin="3"/>
+                            <Button Content="Diamond" Tag="diamond" Click="Preset_Click" Margin="3"/>
+                            <Button Content="Square" Tag="square" Click="Preset_Click" Margin="3"/>
+                            <Button Content="Brackets" Tag="brackets" Click="Preset_Click" Margin="3"/>
+                            <Button Content="Star" Tag="star" Click="Preset_Click" Margin="3"/>
                         </UniformGrid>
 
                         <Border Background="#FF132139" CornerRadius="11" Padding="13" Margin="0,0,0,20">
@@ -105,6 +111,11 @@
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" Content="YENİDEN ADLANDIR" Click="RenameProfile_Click" Background="#FF1D2D48" Padding="7"/>
                                     <Button Grid.Column="2" Content="PROFİLİ SİL" Click="DeleteProfile_Click" Background="#FF633746" Padding="7"/>
+                                </Grid>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="DIŞA AKTAR ↗" Click="ExportProfile_Click" Background="#FF1D2D48" Padding="8"/>
+                                    <Button Grid.Column="2" Content="İÇE AKTAR ↙" Click="ImportProfile_Click" Background="#FF1D2D48" Padding="8"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
