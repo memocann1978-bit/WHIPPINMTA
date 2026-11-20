@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace WHIPPINMTA;
 
@@ -448,6 +449,39 @@ try {{
         }
         if (preset == "circle") EllipseShape(x - size / 2, y - size / 2, size, size, false);
         else if (preset == "dot") { double d = size / 3; EllipseShape(x - d / 2, y - d / 2, d, d, true); }
+        else if (preset == "square")
+        {
+            double h = size / 2;
+            Line(x-h,y-h,x+h,y-h); Line(x+h,y-h,x+h,y+h); Line(x+h,y+h,x-h,y+h); Line(x-h,y+h,x-h,y-h);
+        }
+        else if (preset == "diamond")
+        {
+            double h = size / 2;
+            Line(x,y-h,x+h,y); Line(x+h,y,x,y+h); Line(x,y+h,x-h,y); Line(x-h,y,x,y-h);
+        }
+        else if (preset == "chevron")
+        {
+            if (showLeft) Line(x-leftLength,y-size*0.25,x-gap,y);
+            if (showRight) Line(x+gap,y,x+rightLength,y-size*0.25);
+            if (showBottom) { Line(x-leftLength*0.55,y-size*0.25,x,y+size*0.35); Line(x,y+size*0.35,x+rightLength*0.55,y-size*0.25); }
+        }
+        else if (preset == "tshape")
+        {
+            if (showTop) Line(x-topLength,y-gap,x+rightLength,y-gap);
+            if (showBottom) Line(x,y-gap,x,y+bottomLength);
+        }
+        else if (preset == "brackets")
+        {
+            if (showLeft) { Line(x-leftLength,y-size/2,x-leftLength,y+size/2); Line(x-leftLength,y-size/2,x-gap,y-size/2); Line(x-leftLength,y+size/2,x-gap,y+size/2); }
+            if (showRight) { Line(x+rightLength,y-size/2,x+rightLength,y+size/2); Line(x+gap,y-size/2,x+rightLength,y-size/2); Line(x+gap,y+size/2,x+rightLength,y+size/2); }
+            if (showTop) Line(x,y-topLength,x,y-gap);
+            if (showBottom) Line(x,y+gap,x,y+bottomLength);
+        }
+        else if (preset == "star")
+        {
+            double h = size / 2, d = h * 0.38;
+            Line(x-h,y,x+h,y); Line(x,y-h,x,y+h); Line(x-d,y-d,x+d,y+d); Line(x-d,y+d,x+d,y-d);
+        }
         else
         {
             if (showLeft) Line(x - leftLength, y, x - gap, y);
@@ -626,6 +660,50 @@ try {{
         {
             StatusText.Text = "Profil silinemedi: " + ex.Message;
         }
+    }
+
+
+    private void ExportProfile_Click(object sender, RoutedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem is not string name) { StatusText.Text = "Dışa aktarmak için bir profil seç."; return; }
+        try
+        {
+            var profiles = JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new();
+            if (!profiles.TryGetValue(name, out var settings)) { StatusText.Text = "Profil bulunamadı."; return; }
+            var dialog = new SaveFileDialog { Title = "WHIPPINMTA profilini dışa aktar", Filter = "WHIPPINMTA Profil (*.whipprofile.json)|*.whipprofile.json|JSON dosyası (*.json)|*.json", FileName = name.Replace(" ", "_") + ".whipprofile.json", AddExtension = true, DefaultExt = ".whipprofile.json" };
+            if (dialog.ShowDialog(this) != true) return;
+            System.IO.File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
+            StatusText.Text = $"'{name}' profili dosyaya aktarıldı.";
+        }
+        catch (Exception ex) { StatusText.Text = "Dışa aktarma hatası: " + ex.Message; }
+    }
+
+    private void ImportProfile_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog { Title = "WHIPPINMTA profili içe aktar", Filter = "WHIPPINMTA Profil (*.whipprofile.json;*.json)|*.whipprofile.json;*.json|Tüm dosyalar (*.*)|*.*", CheckFileExists = true, Multiselect = false };
+        if (dialog.ShowDialog(this) != true) return;
+        try
+        {
+            var settings = JsonSerializer.Deserialize<Settings>(System.IO.File.ReadAllText(dialog.FileName));
+            if (settings is null || string.IsNullOrWhiteSpace(settings.Color) || string.IsNullOrWhiteSpace(settings.Preset))
+                throw new InvalidDataException("Dosya geçerli bir WHIPPINMTA profili değil.");
+            var name = ProfileNameBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(name) || name == "Yeni profil")
+                name = System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(dialog.FileName));
+            if (string.IsNullOrWhiteSpace(name)) name = "İçe aktarılan profil";
+            var profiles = System.IO.File.Exists(ProfilesPath) ? JsonSerializer.Deserialize<Dictionary<string, Settings>>(System.IO.File.ReadAllText(ProfilesPath)) ?? new() : new();
+            if (profiles.ContainsKey(name))
+            {
+                var answer = MessageBox.Show($"'{name}' zaten var. Üzerine yazılsın mı?", "Profil çakışması", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (answer != MessageBoxResult.Yes) return;
+            }
+            profiles[name] = settings;
+            System.IO.File.WriteAllText(ProfilesPath, JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true }));
+            ProfileNameBox.Text = name;
+            RefreshProfiles(name);
+            StatusText.Text = $"'{name}' profili içe aktarıldı. Yüklemek için profili seçip yükle.";
+        }
+        catch (Exception ex) { StatusText.Text = "İçe aktarma başarısız: " + ex.Message; }
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
