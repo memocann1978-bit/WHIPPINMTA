@@ -128,6 +128,18 @@
                                 <TextBlock Text="Alt kol" FontSize="11"/>
                                 <Slider x:Name="BottomLengthSlider" Minimum="0" Maximum="50" Value="18" ValueChanged="Setting_Changed"/>
                                 <Button Content="KOLLARI EŞİTLE" Click="EqualizeArms_Click" Background="#FF1D2D48" Padding="8" Margin="0,3,0,0"/>
+                                <TextBlock Text="KOL GÖRÜNÜRLÜĞÜ" FontSize="10" FontWeight="Bold" Foreground="#FFFF5966" Margin="0,14,0,7"/>
+                                <UniformGrid Columns="2">
+                                    <CheckBox x:Name="ShowLeftCheck" Content="Sol kol" IsChecked="True" Click="SettingToggle_Changed"/>
+                                    <CheckBox x:Name="ShowRightCheck" Content="Sağ kol" IsChecked="True" Click="SettingToggle_Changed"/>
+                                    <CheckBox x:Name="ShowTopCheck" Content="Üst kol" IsChecked="True" Click="SettingToggle_Changed"/>
+                                    <CheckBox x:Name="ShowBottomCheck" Content="Alt kol" IsChecked="True" Click="SettingToggle_Changed"/>
+                                </UniformGrid>
+                                <CheckBox x:Name="CenterDotCheck" Content="Merkez noktasını göster" IsChecked="False" Click="SettingToggle_Changed"/>
+                                <TextBlock Text="Merkez noktası boyutu" FontSize="11"/>
+                                <Slider x:Name="CenterDotSizeSlider" Minimum="1" Maximum="12" Value="3" ValueChanged="Setting_Changed"/>
+                                <TextBlock Text="Crosshair açısı" FontSize="11"/>
+                                <Slider x:Name="RotationSlider" Minimum="-180" Maximum="180" Value="0" ValueChanged="Setting_Changed"/>
                             </StackPanel>
                         </Border>
                         <TextBlock Text="Opaklık" FontSize="12" FontWeight="SemiBold"/>
