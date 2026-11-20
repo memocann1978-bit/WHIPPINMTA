@@ -3,7 +3,7 @@
   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
   <DockPanel Margin="0,0,0,22">
    <StackPanel><TextBlock Text="WHIPPINMTA" FontSize="27" FontWeight="Bold"/><TextBlock Text="CROSSHAIR STUDIO  /  DESKTOP OVERLAY" Foreground="#FF858895" FontSize="10" Margin="1,4,0,0"/></StackPanel>
-   <Border DockPanel.Dock="Right" Background="#FF20232B" CornerRadius="14" Padding="12,7" VerticalAlignment="Center"><TextBlock Text="COSMETIC OVERLAY" Foreground="#FFE86A6A" FontSize="10" FontWeight="Bold"/></Border>
+   <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Right"><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Button x:Name="CheckUpdateButton" Content="GÜNCELLEME DENETLE" Click="CheckUpdate_Click" Padding="11,7" Margin="0,0,7,0" Background="#FF292C35" Foreground="White" BorderThickness="0" FontSize="10" FontWeight="Bold"/><Button x:Name="InstallUpdateButton" Content="GÜNCELLE" Click="InstallUpdate_Click" Padding="11,7" Background="#FFE34242" Foreground="White" BorderThickness="0" FontSize="10" FontWeight="Bold" Visibility="Collapsed"/></StackPanel><TextBlock x:Name="UpdateStatusText" Text="Güncellemeler denetleniyor..." Foreground="#FF858895" FontSize="10" Margin="0,5,2,0" TextAlignment="Right"/></StackPanel>
   </DockPanel>
   <Grid Grid.Row="1">
    <Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.4*"/></Grid.ColumnDefinitions>
