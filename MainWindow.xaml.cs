@@ -779,5 +779,4 @@ public sealed class OverlayWindow : Window
         _canvas.Children.Clear();
         MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength, centerDot, centerDotSize, rotation, showLeft, showRight, showTop, showBottom);
     }
-
-
+}
