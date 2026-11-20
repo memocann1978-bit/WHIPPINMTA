@@ -43,7 +43,7 @@ public partial class MainWindow : Window
     private const uint MOD_NOREPEAT = 0x4000;
     private string _overlayHotkey = "F8";
     private sealed record UpdateManifest(string Version, string DownloadUrl, string Sha256);
-    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18, bool CenterDot = false, double CenterDotSize = 3, double Rotation = 0, bool ShowLeft = true, bool ShowRight = true, bool ShowTop = true, bool ShowBottom = true, bool GlowEnabled = false, double GlowStrength = 12, bool CenterRing = false, double CenterRingSize = 16, bool RainbowEnabled = false, double RainbowSpeed = 350, bool PulseEnabled = false, bool BlinkEnabled = false, double EffectSpeed = 100);
+    private sealed record Settings(double Size, double Thickness, double Gap, string Color, string Preset, bool Overlay, double OffsetX = 0, double OffsetY = 0, double Opacity = 1, bool OutlineEnabled = true, double OutlineThickness = 2, string OutlineColor = "#FF000000", string Hotkey = "F8", double LeftLength = 18, double RightLength = 18, double TopLength = 18, double BottomLength = 18, bool CenterDot = false, double CenterDotSize = 3, double Rotation = 0, bool ShowLeft = true, bool ShowRight = true, bool ShowTop = true, bool ShowBottom = true, bool GlowEnabled = false, double GlowStrength = 12, bool CenterRing = false, double CenterRingSize = 16, bool RainbowEnabled = false, double RainbowSpeed = 350, bool PulseEnabled = false, bool BlinkEnabled = false, double EffectSpeed = 100, bool OuterRingEnabled = false, double OuterRingSize = 64, double OuterRingThickness = 2);
 
     public MainWindow()
     {
@@ -316,6 +316,7 @@ try {{
             GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
             RainbowCheck.IsChecked = s.RainbowEnabled; RainbowSpeedSlider.Value = Math.Clamp(s.RainbowSpeed, 80, 1200);
             PulseCheck.IsChecked = s.PulseEnabled; BlinkCheck.IsChecked = s.BlinkEnabled; EffectSpeedSlider.Value = Math.Clamp(s.EffectSpeed, 20, 200);
+            OuterRingCheck.IsChecked = s.OuterRingEnabled; OuterRingSizeSlider.Value = Math.Clamp(s.OuterRingSize, 20, 180); OuterRingThicknessSlider.Value = Math.Clamp(s.OuterRingThickness, 1, 8);
             _color = s.Color;
             _outlineColor = s.OutlineColor;
             if (CustomColorBox is not null) CustomColorBox.Text = _color;
@@ -462,11 +463,11 @@ try {{
         PreviewCanvas.Children.Clear();
         double cx = PreviewCanvas.ActualWidth / 2, cy = PreviewCanvas.ActualHeight / 2;
         if (cx < 1) { PreviewCanvas.Loaded += (s, e) => DrawPreview(); return; }
-        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, AnimatedSize, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, AnimatedOpacity, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value);
+        AddCross(PreviewCanvas, cx + OffsetXSlider.Value, cy + OffsetYSlider.Value, AnimatedSize, ThicknessSlider.Value, GapSlider.Value, ActiveCrosshairColor, _preset, AnimatedOpacity, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, OuterRingCheck.IsChecked == true, OuterRingSizeSlider.Value, OuterRingThicknessSlider.Value);
         UpdateOverlay();
     }
 
-    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true, bool glowEnabled = false, double glowStrength = 12, bool centerRing = false, double centerRingSize = 16)
+    internal static void AddCross(Canvas c, double x, double y, double size, double thick, double gap, string color, string preset, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true, bool glowEnabled = false, double glowStrength = 12, bool centerRing = false, double centerRingSize = 16, bool outerRing = false, double outerRingSize = 64, double outerRingThickness = 2)
     {
         var brush = (Brush)new BrushConverter().ConvertFromString(color)!;
         var outlineBrush = (Brush)new BrushConverter().ConvertFromString(outlineColor)!;
@@ -578,6 +579,13 @@ try {{
             double ring = Math.Max(4, centerRingSize);
             EllipseShape(x - ring / 2, y - ring / 2, ring, ring, false);
         }
+        if (outerRing)
+        {
+            double d = Math.Max(20, outerRingSize);
+            var ring = new Ellipse { Width = d, Height = d, Stroke = brush, StrokeThickness = Math.Max(1, outerRingThickness), Opacity = opacity,
+                Effect = glowEnabled ? new System.Windows.Media.Effects.DropShadowEffect { Color = ((SolidColorBrush)brush).Color, BlurRadius = glowStrength, ShadowDepth = 0, Opacity = 0.9 } : null };
+            Canvas.SetLeft(ring, x - d / 2); Canvas.SetTop(ring, y - d / 2); c.Children.Add(ring);
+        }
         if (centerDot)
         {
             double d = Math.Max(1, centerDotSize);
@@ -595,7 +603,7 @@ try {{
 
     private string ProfilesPath => System.IO.Path.Combine(AppContext.BaseDirectory, "whippinmta-profiles.json");
 
-    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, RainbowCheck.IsChecked == true, RainbowSpeedSlider.Value, PulseCheck.IsChecked == true, BlinkCheck.IsChecked == true, EffectSpeedSlider.Value);
+    private Settings CaptureSettings() => new Settings(SizeSlider.Value, ThicknessSlider.Value, GapSlider.Value, _color, _preset, OverlayCheck.IsChecked == true, OffsetXSlider.Value, OffsetYSlider.Value, OpacitySlider.Value, OutlineCheck.IsChecked == true, OutlineThicknessSlider.Value, _outlineColor, _overlayHotkey, LeftLengthSlider.Value, RightLengthSlider.Value, TopLengthSlider.Value, BottomLengthSlider.Value, CenterDotCheck.IsChecked == true, CenterDotSizeSlider.Value, RotationSlider.Value, ShowLeftCheck.IsChecked == true, ShowRightCheck.IsChecked == true, ShowTopCheck.IsChecked == true, ShowBottomCheck.IsChecked == true, GlowCheck.IsChecked == true, GlowStrengthSlider.Value, CenterRingCheck.IsChecked == true, CenterRingSizeSlider.Value, RainbowCheck.IsChecked == true, RainbowSpeedSlider.Value, PulseCheck.IsChecked == true, BlinkCheck.IsChecked == true, EffectSpeedSlider.Value, OuterRingCheck.IsChecked == true, OuterRingSizeSlider.Value, OuterRingThicknessSlider.Value);
 
     private void RefreshProfiles(string? selectName = null)
     {
@@ -646,6 +654,7 @@ try {{
             GlowCheck.IsChecked = s.GlowEnabled; GlowStrengthSlider.Value = Math.Clamp(s.GlowStrength, 0, 30); CenterRingCheck.IsChecked = s.CenterRing; CenterRingSizeSlider.Value = Math.Clamp(s.CenterRingSize, 4, 60);
             RainbowCheck.IsChecked = s.RainbowEnabled; RainbowSpeedSlider.Value = Math.Clamp(s.RainbowSpeed, 80, 1200);
             PulseCheck.IsChecked = s.PulseEnabled; BlinkCheck.IsChecked = s.BlinkEnabled; EffectSpeedSlider.Value = Math.Clamp(s.EffectSpeed, 20, 200);
+            OuterRingCheck.IsChecked = s.OuterRingEnabled; OuterRingSizeSlider.Value = Math.Clamp(s.OuterRingSize, 20, 180); OuterRingThicknessSlider.Value = Math.Clamp(s.OuterRingThickness, 1, 8);
             OpacitySlider.Value = Math.Clamp(s.Opacity, 0.1, 1.0);
             OutlineCheck.IsChecked = s.OutlineEnabled;
             OutlineThicknessSlider.Value = Math.Clamp(s.OutlineThickness, 1, 8);
@@ -869,9 +878,9 @@ public sealed class OverlayWindow : Window
         };
         Loaded += (s, e) => UpdateCross(18, 2, 5, "#FFFF4242", "classic", 0, 0);
     }
-    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true, bool glowEnabled = false, double glowStrength = 12, bool centerRing = false, double centerRingSize = 16)
+    public void UpdateCross(double size, double thick, double gap, string color, string preset, double offsetX, double offsetY, double opacity = 1, bool outlineEnabled = true, double outlineThickness = 2, string outlineColor = "#FF000000", double leftLength = -1, double rightLength = -1, double topLength = -1, double bottomLength = -1, bool centerDot = false, double centerDotSize = 3, double rotation = 0, bool showLeft = true, bool showRight = true, bool showTop = true, bool showBottom = true, bool glowEnabled = false, double glowStrength = 12, bool centerRing = false, double centerRingSize = 16, bool outerRing = false, double outerRingSize = 64, double outerRingThickness = 2)
     {
         _canvas.Children.Clear();
-        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength, centerDot, centerDotSize, rotation, showLeft, showRight, showTop, showBottom, glowEnabled, glowStrength, centerRing, centerRingSize);
+        MainWindow.AddCross(_canvas, Width / 2 + offsetX, Height / 2 + offsetY, size, thick, gap, color, preset, opacity, outlineEnabled, outlineThickness, outlineColor, leftLength, rightLength, topLength, bottomLength, centerDot, centerDotSize, rotation, showLeft, showRight, showTop, showBottom, glowEnabled, glowStrength, centerRing, centerRingSize, outerRing, outerRingSize, outerRingThickness);
     }
 }
